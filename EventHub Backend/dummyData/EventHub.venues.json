@@ -1,0 +1,156 @@
+[{
+  "_id": {
+    "$oid": "66cba72e21a7f58ac9a33058"
+  },
+  "name": "Convention Center",
+  "address": "123 Main St, New York, NY 10001",
+  "events": [
+    "64ff64eebf5a0d1e5c8b4567",
+    "64ff64eebf5a0d1e5c8b4571"
+  ],
+  "created_at": "2024-08-25T12:00:00Z",
+  "updated_at": "2024-08-25T12:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba72e21a7f58ac9a33059"
+  },
+  "name": "Expo Center",
+  "address": "456 Market St, San Francisco, CA 94111",
+  "events": [
+    "64ff64eebf5a0d1e5c8b4568",
+    "64ff64eebf5a0d1e5c8b4572"
+  ],
+  "created_at": "2024-08-26T12:00:00Z",
+  "updated_at": "2024-08-26T12:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba72e21a7f58ac9a3305a"
+  },
+  "name": "Convention Center",
+  "address": "789 King St, London, UK",
+  "events": [
+    "64ff64eebf5a0d1e5c8b4569",
+    "64ff64eebf5a0d1e5c8b4573"
+  ],
+  "created_at": "2024-08-27T12:00:00Z",
+  "updated_at": "2024-08-27T12:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba72e21a7f58ac9a3305b"
+  },
+  "name": "HealthTech Center",
+  "address": "987 Wellness Blvd, Boston, MA 02118",
+  "events": [
+    "64ff64eebf5a0d1e5c8b4570",
+    "64ff64eebf5a0d1e5c8b4574"
+  ],
+  "created_at": "2024-08-28T12:00:00Z",
+  "updated_at": "2024-08-28T12:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba72e21a7f58ac9a3305c"
+  },
+  "name": "Fairgrounds",
+  "address": "456 Fair Ave, Dallas, TX 75201",
+  "events": [
+    "64ff64eebf5a0d1e5c8b4575",
+    "64ff64eebf5a0d1e5c8b4576"
+  ],
+  "created_at": "2024-08-29T12:00:00Z",
+  "updated_at": "2024-08-29T12:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba72e21a7f58ac9a3305d"
+  },
+  "name": "Art Center",
+  "address": "789 Creative Blvd, Paris, France",
+  "events": [
+    "64ff64eebf5a0d1e5c8b4577",
+    "64ff64eebf5a0d1e5c8b4578"
+  ],
+  "created_at": "2024-08-30T12:00:00Z",
+  "updated_at": "2024-08-30T12:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba72e21a7f58ac9a3305e"
+  },
+  "name": "Energy Park",
+  "address": "123 Green St, Berlin, Germany",
+  "events": [
+    "64ff64eebf5a0d1e5c8b4579",
+    "64ff64eebf5a0d1e5c8b4580"
+  ],
+  "created_at": "2024-08-31T12:00:00Z",
+  "updated_at": "2024-08-31T12:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba72e21a7f58ac9a3305f"
+  },
+  "name": "Startup Hub",
+  "address": "123 Innovation Dr, Chicago, IL 60601",
+  "events": [
+    "64ff64eebf5a0d1e5c8b4581",
+    "64ff64eebf5a0d1e5c8b4582"
+  ],
+  "created_at": "2024-09-01T12:00:00Z",
+  "updated_at": "2024-09-01T12:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba72e21a7f58ac9a33060"
+  },
+  "name": "Science Museum",
+  "address": "456 Discovery Blvd, Toronto, ON M5V 1J1",
+  "events": [
+    "64ff64eebf5a0d1e5c8b4583",
+    "64ff64eebf5a0d1e5c8b4584"
+  ],
+  "created_at": "2024-09-02T12:00:00Z",
+  "updated_at": "2024-09-02T12:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba72e21a7f58ac9a33061"
+  },
+  "name": "HealthTech Center",
+  "address": "987 Wellness Blvd, Boston, MA 02118",
+  "events": [
+    "64ff64eebf5a0d1e5c8b4585",
+    "64ff64eebf5a0d1e5c8b4586"
+  ],
+  "created_at": "2024-09-03T12:00:00Z",
+  "updated_at": "2024-09-03T12:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba72e21a7f58ac9a33062"
+  },
+  "name": "Convention Center",
+  "address": "789 King St, London, UK",
+  "events": [
+    "64ff64eebf5a0d1e5c8b4587",
+    "64ff64eebf5a0d1e5c8b4588"
+  ],
+  "created_at": "2024-09-04T12:00:00Z",
+  "updated_at": "2024-09-04T12:00:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba72e21a7f58ac9a33063"
+  },
+  "name": "Fairgrounds",
+  "address": "456 Fair Ave, Dallas, TX 75201",
+  "events": [
+    "64ff64eebf5a0d1e5c8b4589",
+    "64ff64eebf5a0d1e5c8b4590"
+  ],
+  "created_at": "2024-09-05T12:00:00Z",
+  "updated_at": "2024-09-05T12:00:00Z"
+}]

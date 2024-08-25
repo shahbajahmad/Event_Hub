@@ -3,8 +3,7 @@ const express = require('express');
 const path = require('path');
 require('dotenv').config()
 const cookieParser = require('cookie-parser');
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const mainRouter = require('./routes/mainRouter');
 const { connectDb } = require('./config');
 
 
@@ -21,8 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/api', mainRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -40,7 +38,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 app.listen(PORT, async ( )=>{
-  console.log("server is listening at " +PORT + process.env.DBPASSWORD);
+  console.log("server is listening at " +PORT );
   await connectDb();
   
   })

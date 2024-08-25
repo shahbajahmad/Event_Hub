@@ -1,0 +1,96 @@
+[{
+  "_id": {
+    "$oid": "66cba71e21a7f58ac9a3304a"
+  },
+  "user_id": "66cb32b6ed5e90b7aefcad5b",
+  "event_id": "64ff64eebf5a0d1e5c8b4567",
+  "registered_at": "2024-08-26T15:10:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba71e21a7f58ac9a3304b"
+  },
+  "user_id": "66cb32b6ed5e90b7aefcad5b",
+  "event_id": "64ff64eebf5a0d1e5c8b4568",
+  "registered_at": "2024-08-26T16:10:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba71e21a7f58ac9a3304c"
+  },
+  "user_id": "66cb32b6ed5e90b7aefcad5c",
+  "event_id": "64ff64eebf5a0d1e5c8b4569",
+  "registered_at": "2024-08-26T17:10:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba71e21a7f58ac9a3304d"
+  },
+  "user_id": "66cb32b6ed5e90b7aefcad5b",
+  "event_id": "64ff64eebf5a0d1e5c8b4570",
+  "registered_at": "2024-08-27T10:10:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba71e21a7f58ac9a3304e"
+  },
+  "user_id": "66cb32b6ed5e90b7aefcad5d",
+  "event_id": "64ff64eebf5a0d1e5c8b4571",
+  "registered_at": "2024-08-27T11:10:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba71e21a7f58ac9a3304f"
+  },
+  "user_id": "66cb32b6ed5e90b7aefcad5e",
+  "event_id": "64ff64eebf5a0d1e5c8b4572",
+  "registered_at": "2024-08-27T12:10:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba71e21a7f58ac9a33050"
+  },
+  "user_id": "66cb32b6ed5e90b7aefcad5a",
+  "event_id": "64ff64eebf5a0d1e5c8b4573",
+  "registered_at": "2024-08-27T13:10:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba71e21a7f58ac9a33051"
+  },
+  "user_id": "66cb32b6ed5e90b7aefcad5e",
+  "event_id": "64ff64eebf5a0d1e5c8b4574",
+  "registered_at": "2024-08-27T14:10:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba71e21a7f58ac9a33052"
+  },
+  "user_id": "66cb32b6ed5e90b7aefcad5a",
+  "event_id": "64ff64eebf5a0d1e5c8b4575",
+  "registered_at": "2024-08-27T15:10:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba71e21a7f58ac9a33053"
+  },
+  "user_id": "66cb32b6ed5e90b7aefcad5b",
+  "event_id": "64ff64eebf5a0d1e5c8b4576",
+  "registered_at": "2024-08-27T16:10:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba71e21a7f58ac9a33054"
+  },
+  "user_id": "66cb32b6ed5e90b7aefcad5d",
+  "event_id": "64ff64eebf5a0d1e5c8b4577",
+  "registered_at": "2024-08-27T17:10:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cba71e21a7f58ac9a33055"
+  },
+  "user_id": "66cb32b6ed5e90b7aefcad5e",
+  "event_id": "64ff64eebf5a0d1e5c8b4578",
+  "registered_at": "2024-08-27T18:10:00Z"
+}]

@@ -1,0 +1,60 @@
+[{
+  "_id": {
+    "$oid": "66cb32b6ed5e90b7aefcad5a"
+  },
+  "first_name": "Jane",
+  "last_name": "Doe",
+  "email": "jane.doe@example.com",
+  "password": "$2b$10$J1oM9T.sEdfjfjf8hbO2OefnH9a9a3PauRAhCMFlHkOesV3U",
+  "role": "Organizer",
+  "created_at": "2024-08-01T10:15:00Z",
+  "updated_at": "2024-08-01T10:15:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cb32b6ed5e90b7aefcad5b"
+  },
+  "first_name": "John",
+  "last_name": "Smith",
+  "email": "john.smith@example.com",
+  "password": "$2b$10$eEcAeF4fF3GhxER5ThBHv4h2P5LJ1u3TYf6TfR5J3Gt92fGe",
+  "role": "Attendee",
+  "created_at": "2024-08-02T12:25:00Z",
+  "updated_at": "2024-08-02T12:25:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cb32b6ed5e90b7aefcad5c"
+  },
+  "first_name": "Alex",
+  "last_name": "Johnson",
+  "email": "alex.admin@example.com",
+  "password": "$2b$10$ThG8vFT3R5BfG3H2m0jYlD9lP9lF7lP6lG7vR1vJ5MvPfYtYl",
+  "role": "Admin",
+  "created_at": "2024-08-03T14:35:00Z",
+  "updated_at": "2024-08-03T14:35:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cb32b6ed5e90b7aefcad5d"
+  },
+  "first_name": "Mike",
+  "last_name": "Williams",
+  "email": "mike.eventorganizer@example.com",
+  "password": "$2b$10$MeFdEf4GxER5yGjRlRn5VfTpF6Th3Th3lF6GpF5JhP9lKtPlF",
+  "role": "Organizer",
+  "created_at": "2024-08-04T16:45:00Z",
+  "updated_at": "2024-08-04T16:45:00Z"
+},
+{
+  "_id": {
+    "$oid": "66cb32b6ed5e90b7aefcad5e"
+  },
+  "first_name": "Emma",
+  "last_name": "Brown",
+  "email": "emma.attendee@example.com",
+  "password": "$2b$10$JeF1V3J4rG4h5Rt3ThP9fY1J9mF4pL7GjJ7kF7vT4GtL5rFgF",
+  "role": "Attendee",
+  "created_at": "2024-08-05T18:55:00Z",
+  "updated_at": "2024-08-05T18:55:00Z"
+}]
