@@ -1,13 +1,13 @@
 
 const express = require('express');
-const userRouter = require('./subRoutes/userRoutes')
-const eventRouter = require('./subRoutes/eventRoutes')
-const ticketRouter = require('./subRoutes/ticketRoutes')
+const userRouter = require('./apiRoutes/userRoutes')
+const eventRouter = require('./apiRoutes/eventRoutes')
+const ticketRouter = require('./apiRoutes/ticketRoutes')
 const mainRouter = express.Router();
-const analyticsRoutes = require('./subRoutes/analyticsRoutes');
-const paymentRoutes = require('./subRoutes/paymentRoutes');
-const registrationRoutes = require('./subRoutes/registrationRoutes');
-const venueRoutes = require('./subRoutes/venueRoutes');
+const analyticsRoutes = require('./apiRoutes/analyticsRoutes');
+const paymentRoutes = require('./apiRoutes/paymentRoutes');
+const registrationRoutes = require('./apiRoutes/registrationRoutes');
+const venueRoutes = require('./apiRoutes/venueRoutes');
 
 mainRouter.use('/users', userRouter);
 mainRouter.use('/events', eventRouter);
