@@ -7,17 +7,23 @@ const mainRouter = require('./routes/mainRouter');
 const authRouter = require('./routes/authRoutes/authRouter');
 const { connectDb } = require('./config');
 const {authMiddleware} = require('./middleware/authMiddleware')
- 
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000
+const corsOptions = {
+  origin: '*', 
+  optionsSuccessStatus: 200
+};
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.use(cors(corsOptions));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 

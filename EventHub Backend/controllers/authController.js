@@ -24,17 +24,17 @@ exports.signUpUser = async (req, res) => {
 exports.signInUser = async (req, res) => {
     try {
       const { email, password } = req.body;
-  
+     
       // Check if the user exists
       const user = await User.findOne({ email });
       if (!user) {
-        return res.status(400).json({ error: "User does not exist" });
+        return res.status(404).json({ error: "Email or password is incorrect" });
       }
   
       // Check if the password is correct
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ error: "Invalid credentials" });
+        return res.status(401).json({ error: "Email or password is incorrect" });
       }
   
       // Generate a token
@@ -55,7 +55,6 @@ exports.signInUser = async (req, res) => {
         created_at: user.created_at,
         updated_at: user.updated_at,
       };
-  
       return res.status(200).json({ token, user: userWithoutPassword });
     } catch (error) {
       return res.status(500).json({ error: error.message });
