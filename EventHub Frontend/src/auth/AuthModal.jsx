@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import SignupForm from "../auth/SignupForm"
 import LoginForm from "../auth/LoginForm"
+import {  useSelector } from 'react-redux';
 const style = {
     position: 'absolute',
     top: '50%',
@@ -15,7 +16,8 @@ const style = {
   };
 
 function AuthModal({openModal,handleCloseModal}) {
-const [switchModal, setswitchModal] = useState(false)
+
+      const {isLoginForm} =  useSelector((state)=>state.modal)
   return (
     <div>  
     <Modal
@@ -25,7 +27,7 @@ const [switchModal, setswitchModal] = useState(false)
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}  >
-      {switchModal?<SignupForm switchModel={setswitchModal}/>:<LoginForm switchModel={setswitchModal}/>}
+      {isLoginForm?<LoginForm />:<SignupForm />}
       </Box>
     </Modal></div>
   )

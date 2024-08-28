@@ -1,6 +1,11 @@
 import React from 'react'
 import { Avatar } from '@mui/material';
+import { setavatarColor } from '../service/features/userSlice';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+
 function stringToColor(string) {
+   
     let hash = 0;
     let i;
   
@@ -29,6 +34,13 @@ function stringToColor(string) {
     };
   }
 export default function CustomAvatar({str}) {
+  const dispatch = useDispatch()
+  useEffect(() => {
+ 
+ 
+ dispatch(setavatarColor(stringToColor(str)))   
+  }, )
+  
   return (
     <div> <Avatar {...stringAvatar(str)} className='uppercase' variant="" /></div>
   )

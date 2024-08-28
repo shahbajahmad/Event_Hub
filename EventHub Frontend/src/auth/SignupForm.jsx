@@ -1,28 +1,46 @@
 import { Button, Grid, TextField, Typography } from "@mui/material";
-import React from "react";
-import { DevTool } from "@hookform/devtools";
+import React,{useEffect} from "react";
 import { useForm } from "react-hook-form";
-function SignupForm({ switchModel }) {
+import CircularProgress from '@mui/material/CircularProgress';
+import { useDispatch, useSelector } from 'react-redux';
+import { signupUser,resetError } from '../service/features/authSlice';
+import { switchtoLoginModal } from "../service/features/modalSlice";
+
+
+function SignupForm() {
+  const dispatch = useDispatch();
+  const { isLoading, error,user } = useSelector((state) => state.auth);
   const form = useForm();
-  const { register, control, handleSubmit,watch,formState } = form;
-  const {errors} = formState;
+  const { register,control ,handleSubmit, watch, formState: { errors } } = form;
+
   const password = watch("password");
-  const onSubmit = (data) => {
-    console.log(data);
+
+  const onSubmit =  (data) => {
+    dispatch(signupUser(data));
   };
+
+
+
   return (
     <div>
-      <form action="" onSubmit={handleSubmit(onSubmit)} noValidate>
+      {error && (
+        <Typography sx={{ marginBottom: 3, textTransform: "capitalize", textAlign: "center", color: "red" }} variant="h6">
+          {error}
+        </Typography>
+      )}
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <TextField
               required
-              id="firstname"
-              {...register("firstname",{
-                required: "First name is required"})}
+              id="first_name"
+              {...register("first_name", {
+                required: "First name is required",
+                minLength:{value:3,message:"Minimum 3 characters required"}
+              })}
               label="First Name"
-              error={!!errors.firstname}
-              helperText={errors.firstname?.message}
+              error={!!errors.first_name}
+              helperText={errors.first_name?.message}
               fullWidth
               autoComplete="given-name"
             ></TextField>
@@ -31,13 +49,15 @@ function SignupForm({ switchModel }) {
           <Grid item xs={12} sm={6}>
             <TextField
               required
-              id="lastname"
-              {...register("lastname",{
-                required: "Last name is required"})}
+              id="last_name"
+              {...register("last_name", {
+                required: "Last name is required",
+                minLength:{value:3,message:"Minimum 3 characters required"}
+              })}
               label="Last Name"
               fullWidth
-              error={!!errors.lastname}
-              helperText={errors.lastname?.message}
+              error={!!errors.last_name}
+              helperText={errors.last_name?.message}
               autoComplete="given-name"
             ></TextField>
           </Grid>
@@ -67,7 +87,7 @@ function SignupForm({ switchModel }) {
                 required: "Password is required",
                 minLength: {
                   value: 8,
-                  message: "Minimun 8 characters required",
+                  message: "Minimum 8 characters required",
                 },
               })}
               label="Password"
@@ -101,8 +121,9 @@ function SignupForm({ switchModel }) {
               fullWidth
               sx={{ paddingBlock: "13px" }}
               type="submit"
+              disabled={isLoading}
             >
-              Sign Up
+              {isLoading ? <CircularProgress size={24} /> : "Sign Up"}
             </Button>
           </Grid>
           <Grid
@@ -116,9 +137,7 @@ function SignupForm({ switchModel }) {
             <Typography align="center">
               Already have an account?{" "}
               <span
-                onClick={() => {
-                  switchModel(false);
-                }}
+                onClick={() => dispatch(switchtoLoginModal())}
                 style={{ color: "#1976d2", cursor: "pointer" }}
               >
                 Login
@@ -127,7 +146,7 @@ function SignupForm({ switchModel }) {
           </Grid>
         </Grid>
       </form>
-      <DevTool control={control} />
+     
     </div>
   );
 }

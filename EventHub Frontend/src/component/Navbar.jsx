@@ -9,33 +9,51 @@ import {
   MenuItem,
   MenuItems,
 } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Button from "@mui/material/Button";
 import SearchSharpIcon from "@mui/icons-material/SearchSharp";
 import AuthModal from "../auth/AuthModal";
 import CustomAvatar from "./CustomAvatar";
 import { TextField } from "@mui/material";
+import { useDispatch, useSelector } from 'react-redux';
+import { openModal, closeModal } from '../service/features/modalSlice';
+import { logout } from '../service/features/authSlice';
+
+
 const Navbar = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
+  const { isOpen } = useSelector((state) => state.modal);
+  const { user, token } = useSelector((state) => state.auth);
   const [isSearchVisible, setIsSearchVisible] = useState(true);
-  const [isLogin, setisLogin] = useState(true);
-
+ 
   const navigation = [
     { name: "Home", to: "/", current: location.pathname === "/" },
     { name: "Dashboard", to: "/dashboard", current: location.pathname === "/dashboard" },
     { name: "Events", to: "/event", current: location.pathname === "/event" },
   ];
+
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
+
   const toggleSearchBar = () => {
     setIsSearchVisible(!isSearchVisible);
     setTimeout(() => {}, 2000);
   };
+
+  const handleOpen = () => {
+    dispatch(openModal());
+  };
+
+  const handleClose = () => {
+    dispatch(closeModal());
+  };
+
+  const handleLogout = () => {
   
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+    dispatch(logout());
+  };
 
   return (
     <>
@@ -67,7 +85,7 @@ const Navbar = () => {
         <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
           <div className="relative flex h-16 items-center justify-between">
             <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-              {/* Mobile menu button*/}
+              {/* Mobile menu button */}
               <DisclosureButton className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                 <span className="absolute -inset-0.5" />
                 <span className="sr-only">Open main menu</span>
@@ -81,13 +99,15 @@ const Navbar = () => {
                 />
               </DisclosureButton>
             </div>
-            <Link to="/" ><div className=" ps-10 sm:ps-2 flex  items-center">
-            <img
-                alt="Your Company"
-                src="/images/Logo.png"
-                className="w-32 hidden sm:block"
-              />
-            </div></Link>
+            <Link to="/">
+              <div className="ps-10 sm:ps-2 flex items-center">
+                <img
+                  alt="Your Company"
+                  src="/images/Logo.png"
+                  className="w-32 hidden sm:block"
+                />
+              </div>
+            </Link>
             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
@@ -127,13 +147,13 @@ const Navbar = () => {
               </Button>
 
               {/* Profile dropdown */}
-              {false ? (
+              {token ? (
                 <Menu as="div" className="relative">
                   <div>
                     <MenuButton className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
-                      <CustomAvatar str={"bilal"} />
+                      <CustomAvatar str={user?.first_name || "User"} />
                     </MenuButton>
                   </div>
                   <MenuItems
@@ -150,9 +170,7 @@ const Navbar = () => {
                     </MenuItem>
                     <MenuItem>
                       <Link
-                        onClick={() => {
-                          setisLogin(false);
-                        }}
+                        onClick={handleLogout}
                         to="#"
                         className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100"
                       >
@@ -174,7 +192,7 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        <AuthModal openModal={open} handleCloseModal={handleClose} />
+        <AuthModal openModal={isOpen} handleCloseModal={handleClose} />
         <DisclosurePanel className="sm:hidden">
           <div className="space-y-1 px-2 pb-3 pt-2">
             {navigation.map((item) => (

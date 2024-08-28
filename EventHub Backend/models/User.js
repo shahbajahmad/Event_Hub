@@ -6,6 +6,8 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, enum: ['Organizer', 'Attendee', 'Admin'], default: 'Attendee' },
+  city: { type: String, required: false }, // Optional city field
+  gender: { type: String, enum: ['Male', 'Female', 'Other'], required: false },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now }
 });

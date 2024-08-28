@@ -23,6 +23,7 @@ exports.getUser = async (req, res) => {
   }
 };
 
+
 exports.updateUser = async (req, res) => {
   try {
     const updates = req.body;
@@ -33,14 +34,19 @@ exports.updateUser = async (req, res) => {
       updates.password = await bcrypt.hash(updates.password, salt);
     }
 
-    const user = await User.findByIdAndUpdate(req.params.id, updates, { new: true }).select('-password');
+    // Find the user by ID and update the details
+    const user = await User.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true }).select('-password');
+
+    // If user not found, return 404
     if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Return the updated user data, excluding the password
     res.json(user);
   } catch (error) {
+    // Return a 400 status code with the error message if an error occurs
     res.status(400).json({ error: error.message });
   }
 };
-
 exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
