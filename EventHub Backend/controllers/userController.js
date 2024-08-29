@@ -26,6 +26,7 @@ exports.getUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
+    console.log(req.body)
     const updates = req.body;
 
     // If password is being updated, hash it before saving

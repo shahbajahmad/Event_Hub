@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { deepPurple } from "@mui/material/colors";
 
+
+
+const apiUrl = import.meta.env.VITE_API_BASE_URL;
 export const fetchUser = createAsyncThunk(
   "userProfile/fetchUser",
   async (userData, { getState, rejectWithValue }) => {
@@ -51,7 +54,7 @@ export const updateUser = createAsyncThunk(
         return rejectWithValue(data.error);
       }
     
-      return data.user;
+      return data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -61,7 +64,7 @@ export const updateUser = createAsyncThunk(
 const initialState = {
   isLoading: false,
   avatarColor: deepPurple[500],
-  user: JSON.parse(localStorage.getItem("user")) || null,
+  user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
   error: null,
 };
 const userSlice = createSlice({
@@ -91,7 +94,6 @@ const userSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = action.payload;
-        // Optionally update localStorage
         localStorage.setItem("user", JSON.stringify(action.payload));
       })
       .addCase(updateUser.rejected, (state, action) => {

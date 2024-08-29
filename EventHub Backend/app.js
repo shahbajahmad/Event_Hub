@@ -5,9 +5,12 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const mainRouter = require('./routes/mainRouter');
 const authRouter = require('./routes/authRoutes/authRouter');
+const uploadRouter = require('./routes/uploadRouter');
 const { connectDb } = require('./config');
 const {authMiddleware} = require('./middleware/authMiddleware')
 const cors = require('cors');
+
+
 
 const app = express();
 const PORT = process.env.PORT || 3000
@@ -15,6 +18,10 @@ const corsOptions = {
   origin: '*', 
   optionsSuccessStatus: 200
 };
+
+
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // view engine setup
@@ -23,12 +30,12 @@ app.set('view engine', 'ejs');
 
 app.use(cors(corsOptions));
 
-
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api',authMiddleware, mainRouter);
 app.use('/auth', authRouter);
+app.use('/upload', uploadRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

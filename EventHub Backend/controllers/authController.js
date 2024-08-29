@@ -50,6 +50,8 @@ exports.signInUser = async (req, res) => {
         _id: user._id,
         first_name: user.first_name,
         last_name: user.last_name,
+        city: user.city,
+          gender: user.gender,
         email: user.email,
         role: user.role,
         created_at: user.created_at,

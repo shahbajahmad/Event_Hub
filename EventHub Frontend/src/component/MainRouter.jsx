@@ -18,11 +18,11 @@ export default function MainRouter() {
  <main className="flex-grow">
  <Routes>
     <Route path="/" element={<HomePage/>}></Route>
-    <Route path="/organize-event" element={<OrganizePage/>}></Route>
+    <Route path="/organize-event" element={user ? <OrganizePage/>: <Navigate to="/" />}></Route>
     <Route path="/profile"  element={user ? <ProfilePage /> : <Navigate to="/" />}></Route>
     <Route path="/event" element={<EventsPage/>}></Route>
     <Route path="/event/:id" element={<EventDetailPage/>}></Route>
-    <Route path="/dashboard" element={<DashboardPage/>}></Route>
+    <Route path="/dashboard" element={user ? <DashboardPage/>: <Navigate to="/" />}></Route>
     <Route path="*" element={<NotFound/>} />
  </Routes>
  </main>

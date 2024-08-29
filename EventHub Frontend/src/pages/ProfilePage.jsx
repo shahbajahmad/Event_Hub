@@ -38,8 +38,9 @@ export default function ProfilePage() {
   const dispatch = useDispatch()
 
   const onSubmit = (data) => {
-    console.log(data)
+
     dispatch(updateUser({ ...data, _id }));
+    
     setIsEditable(false);
   };
 
@@ -147,9 +148,9 @@ export default function ProfilePage() {
                   onChange={(e) => setValue("gender", e.target.value)}
                   row
                 >
-                  <FormControlLabel value="male" control={<Radio />} label="Male" />
-                  <FormControlLabel value="female" control={<Radio />} label="Female" />
-                  <FormControlLabel value="other" control={<Radio />} label="Other" />
+                  <FormControlLabel value="Male" control={<Radio />} label="Male" />
+                  <FormControlLabel value="Female" control={<Radio />} label="Female" />
+                  <FormControlLabel value="Other" control={<Radio />} label="Other" />
                 </RadioGroup>
               ) : (
                 <Typography variant="body1">{watch("gender") || '-'}</Typography>

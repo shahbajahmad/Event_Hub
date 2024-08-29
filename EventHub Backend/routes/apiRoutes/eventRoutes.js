@@ -8,7 +8,10 @@ const {
   deleteEvent,
 } = require('../../controllers/eventController');
 
+
 const router = express.Router();
+
+
 
 router.post('/', createEvent);
 router.get('/', getEvents);

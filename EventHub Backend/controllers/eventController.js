@@ -1,8 +1,10 @@
 
 const Event = require('../models/Event');
 
+
 exports.createEvent = async (req, res) => {
   try {
+
     const event = new Event(req.body);
     await event.save();
     res.status(201).json(event);
