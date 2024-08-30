@@ -1,33 +1,49 @@
-import { Button, Grid, TextField, Typography } from "@mui/material";
-import React,{useEffect} from "react";
+import { Alert, Button, Grid, Snackbar, TextField, Typography } from "@mui/material";
+import React,{useEffect,useRef,useState} from "react";
 import { useForm } from "react-hook-form";
 import CircularProgress from '@mui/material/CircularProgress';
 import { useDispatch, useSelector } from 'react-redux';
-import { signupUser,resetError } from '../service/features/authSlice';
+import { signupUser } from '../service/features/authSlice';
 import { switchtoLoginModal } from "../service/features/modalSlice";
+import { showSnackbar } from "../service/features/snackbarSlice";
 
 
 function SignupForm() {
   const dispatch = useDispatch();
-  const { isLoading, error,user } = useSelector((state) => state.auth);
+ 
+  const { isLoading, signupError } = useSelector((state) => state.auth);
+  const prevIsLoading = useRef(isLoading);
   const form = useForm();
   const { register,control ,handleSubmit, watch, formState: { errors } } = form;
+ 
 
   const password = watch("password");
 
   const onSubmit =  (data) => {
     dispatch(signupUser(data));
-  };
+   
+  };  
 
+  useEffect(() => {
+    if (!isLoading && prevIsLoading.current) {
+      if (!signupError) {
+          // Signup was successful
+          dispatch(switchtoLoginModal());
+          dispatch(showSnackbar({ message: "Account created successfully", severity: 'success' }));
+      } else {
+          // Signup encountered an error
+          dispatch(showSnackbar({ message: signupError, severity: 'error' }));
+      }
+  }
+  prevIsLoading.current = isLoading;
+
+  }, [isLoading, signupError, dispatch]);
 
 
   return (
+    
     <div>
-      {error && (
-        <Typography sx={{ marginBottom: 3, textTransform: "capitalize", textAlign: "center", color: "red" }} variant="h6">
-          {error}
-        </Typography>
-      )}
+      
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>

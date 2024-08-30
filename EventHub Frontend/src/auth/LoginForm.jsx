@@ -5,10 +5,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../service/features/authSlice';
 import { closeModal, switchtoSignupModal } from '../service/features/modalSlice';
+import { showSnackbar } from "../service/features/snackbarSlice";
 
 function SignupForm() {
   const dispatch = useDispatch();
-  const { isLoading, error, token } = useSelector((state) => state.auth);
+  const { isLoading, loginError, token } = useSelector((state) => state.auth);
   
   const form = useForm();
   const { register, handleSubmit, formState: { errors } } = form;
@@ -18,18 +19,16 @@ function SignupForm() {
   };
 
   useEffect(() => {
+    if (!isLoading && loginError) {
+      dispatch(showSnackbar({ message: loginError, severity: 'error' }));
+    }
     if (token) {
       dispatch(closeModal());
     }
-  }, [token, dispatch]);
-
+  }, [token, dispatch,isLoading,loginError]);
+ 
   return (
     <div>
-      {error && (
-        <Typography sx={{ marginBottom: 3, textTransform: "capitalize", textAlign: "center", color: "red" }} variant="h6">
-          {error}
-        </Typography>
-      )}
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Grid container spacing={3}>
           <Grid item xs={12}>

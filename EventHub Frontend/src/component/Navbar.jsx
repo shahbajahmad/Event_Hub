@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Disclosure,
@@ -18,6 +18,7 @@ import { TextField } from "@mui/material";
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal } from '../service/features/modalSlice';
 import { logout } from '../service/features/authSlice';
+import { showSnackbar,setPosition, resetPosition } from "../service/features/snackbarSlice";
 
 
 const Navbar = () => {
@@ -29,8 +30,9 @@ const Navbar = () => {
  
   const navigation = [
     { name: "Home", to: "/", current: location.pathname === "/" },
-    { name: "Dashboard", to: "/dashboard", current: location.pathname === "/dashboard" },
+    
     { name: "Events", to: "/event", current: location.pathname === "/event" },
+    { name: "Dashboard", to: "/dashboard", current: location.pathname === "/dashboard" },
   ];
 
   function classNames(...classes) {
@@ -51,9 +53,10 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-  
+    dispatch(showSnackbar({message:"Logout successful"}))
     dispatch(logout());
   };
+
 
   return (
     <>
@@ -111,8 +114,11 @@ const Navbar = () => {
             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
-                  {navigation.map((item) => (
-                    <Link
+                  {navigation.map((item) => {
+                   if (item.name === "Dashboard" && !token) {
+                    return null
+                   } 
+                 return   <Link
                       key={item.name}
                       to={item.to}
                       aria-current={item.current ? "page" : undefined}
@@ -125,19 +131,19 @@ const Navbar = () => {
                     >
                       {item.name}
                     </Link>
-                  ))}
+                  })}
                 </div>
               </div>
             </div>
             <div className="absolute inset-y-0 right-0 flex gap-2 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              <Link to="/organize-event">
+             {token && <Link to="/organize-event">
                 <Button
                   variant="contained"
                   className=" rounded-full  capitalize "
                 >
                   Organize
                 </Button>
-              </Link>
+              </Link>}
               <Button
                 variant="contained"
                 className=" rounded-full capitalize "

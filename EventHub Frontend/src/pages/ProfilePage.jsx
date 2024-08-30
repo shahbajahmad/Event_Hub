@@ -34,6 +34,8 @@ export default function ProfilePage() {
       gender: gender,
     },
   });
+ const firstname = watch("first_name")
+ const lastname = watch("last_name")
 
   const dispatch = useDispatch()
 
@@ -63,12 +65,12 @@ export default function ProfilePage() {
         />
         <Box sx={{ textAlign: 'center', mt: '-50px' }}>
           <Avatar
-            sx={{ fontSize: 30, width: 100, height: 100, mx: 'auto', border: '4px solid white', bgcolor: avatarColor }}
+            sx={{ fontSize: 30, width: 100, height: 100, mx: 'auto', textTransform:"uppercase", border: '4px solid white', bgcolor: avatarColor }}
           >
             {first_name[0]}
           </Avatar>
           <Typography variant="h5" sx={{ mt: 2 }} className="capitalize">
-            {`${first_name} ${last_name}`} <span style={{ color: '#00f' }}>•</span>
+            {`${firstname} ${lastname}`} <span style={{ color: '#00f' }}>•</span>
           </Typography>
           <Grid container justifyContent="center" sx={{ mt: 2 }}>
             <Grid item xs={6} sm={3}>

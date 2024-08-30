@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   TextField,
   Button,
@@ -19,14 +19,12 @@ import {
   Divider,
   Backdrop,
   CircularProgress,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import FileUploader from "./FileUploader";
 import { createEvent } from "../service/features/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { showSnackbar } from "../service/features/snackbarSlice";
 
 const defaultValues = {
   event_type: 'Physical',
@@ -54,9 +52,7 @@ export default function CreateEvent() {
   const dispatch = useDispatch();
   const { user: { _id } } = useSelector(state => state.auth);
   const { isLoading, error, event } = useSelector(state => state.event);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('');
+  const hasMounted = useRef(false);
 
   const { register, handleSubmit, control, watch, formState: { errors } } = useForm({ defaultValues });
   const entry_type = watch("entry_type");
@@ -66,14 +62,14 @@ export default function CreateEvent() {
   };
 
   useEffect(() => {
-    if (event) {
-      setSnackbarMessage("Event created successfully!");
-      setSnackbarSeverity("success");
-      setOpenSnackbar(true);
-    } else if (error) {
-      setSnackbarMessage(`Error: ${error}`);
-      setSnackbarSeverity("error");
-      setOpenSnackbar(true);
+    if (hasMounted.current) {
+      if (error) {
+        dispatch(showSnackbar({ message: error, severity: "error" }));
+      }else if (event) {
+        dispatch(showSnackbar({ message: "Event created successfully", severity: "success" }));
+      }  
+    } else {
+      hasMounted.current = true;
     }
   }, [event, error,isLoading]);
 
@@ -419,26 +415,17 @@ export default function CreateEvent() {
       </Paper>
 
       {/* Full-Screen Loader */}
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1,  height:"100%"}} open={isLoading}>
+      <Backdrop  sx={{
+    color: '#fff',
+    zIndex: (theme) => theme.zIndex.drawer + 1,
+    position: 'fixed', 
+    top: 0,
+    left: 0,
+    width: '100vw',    
+    height: '100vh',    
+  }} open={isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-
-      {/* Snackbar */}
-      <Snackbar
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={() => setOpenSnackbar(false)}
-      >
-        <Alert
-          onClose={() => setOpenSnackbar(false)}
-          severity={snackbarSeverity}
-          sx={{ width: '100%' }}
-          icon={snackbarSeverity === 'success' ? <CheckCircleIcon /> : undefined}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 }
