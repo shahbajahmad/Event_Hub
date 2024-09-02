@@ -6,13 +6,9 @@ const responsive = {
     0: { items: 1 },
 
 };
-const items = events.map((item) => (
-    <div key={item.name} className=' overflow-y-hidden max-h-[200px] sm:max-h-[600px] px-0 sm:px-10'>
-        <img src={item.src} alt={item.name} className='h-max w-max mx-auto  object-scale-down object-center' />
-    </div>
-));
 
-const HomeCarousel = () => (
+
+const HomeCarousel = ({items}) => (
     <div className="mx-auto  ">
      
     <AliceCarousel

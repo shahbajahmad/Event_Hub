@@ -38,7 +38,6 @@ const CountdownTimer = ({ targetDate }) => {
         {['days', 'hours', 'minutes', 'seconds'].map((unit, index) => (
           <Box key={index} textAlign="center" sx={{ position: 'relative' }}>
             <CircularProgress
-            disableShrink
               variant="determinate"
               value={100 - timeLeft[`percentage${unit.charAt(0).toUpperCase() + unit.slice(1)}`]}
               size={80}
@@ -61,7 +60,7 @@ const CountdownTimer = ({ targetDate }) => {
               }}
             >
               <Typography variant="h5" component="div">
-                {timeLeft[unit] <10 ?`0${timeLeft[unit]}`:timeLeft[unit]  || '0'}
+                {timeLeft[unit] <10 ?`0${timeLeft[unit]}`:timeLeft[unit]  || '00'}
               </Typography>
             </Box>
             <Typography variant="body2" sx={{ mt: 1 }}>

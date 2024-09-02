@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Grid,
   Paper,
@@ -13,17 +13,89 @@ import {
   TableHead,
   TableRow,
   Link,
+  Skeleton,
 } from '@mui/material';
-import CountdownTimer from '../component/CountdownTimer'; // Assuming the CountdownTimer component is defined
+import { useParams } from 'react-router-dom';
+import CountdownTimer from '../component/CountdownTimer';
+import { useDispatch, useSelector } from 'react-redux';
+import { openModal } from '../service/features/modalSlice';
+import { showSnackbar } from '../service/features/snackbarSlice';
 
 export default function EventPage() {
-  const targetDate = '2024-09-01T10:30:00';
+  const { id } = useParams(); // Get the event ID from the URL
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch()
+  const {token} = useSelector((state)=>state.auth)
+
+
+  useEffect(() => {
+    // Fetch the event data based on the ID
+    const fetchEvent = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/public/events/${id}`);
+        const data = await response.json();
+        setEvent(data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching event:', error);
+        setLoading(false);
+      }
+    };
+    fetchEvent();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <Box sx={{ maxWidth: '1200px', mx: 'auto', mt: 4, p: 2 }}>
+          <Typography variant="h4" fontWeight={"bold"} className='text-center mb-10'>
+        Event <span className="text-orange-400 font-extrabold">Details </span>
+      </Typography>
+        {/* Loading Skeleton */}
+        <Grid container spacing={4}>
+          
+          <Grid item xs={12} md={7}>
+            <Skeleton variant="rectangular" height={600} />
+          </Grid>
+          <Grid item xs={12} md={5}>
+            <Skeleton variant="rectangular" height={400} />
+          </Grid>
+        </Grid>
+      </Box>
+    );
+  }
+
+  if (!event) {
+    return (
+      <Box sx={{ maxWidth: '1200px', mx: 'auto', mt: 4, p: 2 }}>
+          <Typography variant="h4" fontWeight={"bold"} className='text-center mb-10'>
+        Event <span className="text-orange-400 font-extrabold">Details </span>
+      </Typography>
+        <Typography variant="h4" color="error" textAlign="center">
+          Event not found
+        </Typography>
+      </Box>
+    );
+  }
+
+
+
+  const targetDate = event.date_from; // Use event's date_from as the countdown target date
+
+  const handleBuyTicket = ()=>{
+    if (!token) {
+      dispatch(openModal())
+
+      dispatch(showSnackbar({message:"Kindly login to buy the ticket",severity:"error"}))
+    }
+  }
+
 
   return (
     <Box sx={{ maxWidth: '1200px', mx: 'auto', mt: 4, p: 2 }}>
-        <Typography variant="h4" fontWeight={"bold"} className='text-center mb-10'>
-     Event <span className="text-orange-400 font-extrabold">Details </span>
-    </Typography>
+      <Typography variant="h4" fontWeight={"bold"} className='text-center mb-10'>
+        Event <span className="text-orange-400 font-extrabold">Details </span>
+      </Typography>
    
       <Grid container spacing={4}>
         {/* Left Column */}
@@ -32,24 +104,22 @@ export default function EventPage() {
             <Typography variant="h4" color="primary" gutterBottom>
               Description
             </Typography>
-            <Typography variant="h6" gutterBottom>
-              Welcome to the Kubernetes Community Day Lahore 2024
+            <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
+              {event.name}
             </Typography>
             <Typography variant="body1" paragraph>
-              Step into the future of cloud-native technology at K8s Community Day Lahore, a transformative experience centered around Kubernetes and cutting-edge innovations. As technology evolves, the significance of cloud-native computing and Kubernetes in shaping IT infrastructure and application development has never been more profound. This hybrid event is scheduled for both online and on-site participation.
+              {event.description}
             </Typography>
-            <Typography variant="subtitle1" color="secondary" sx={{ fontWeight: 'bold' }}>
+            <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
               Event Highlights
             </Typography>
-            <Typography variant="body2" paragraph>
-              In-Depth Talks and Workshops<br/>
-              Networking Opportunities<br/>
-              Hands-On Learning<br/>
-              Open-Source Exploration<br/>
-              Renowned Speakers<br/>
-              Exhibitor Showcase<br/>
-              Interactive Q&A
-            </Typography>
+            <div variant="body2" paragraph>
+  {event.highlights.join(', ').split(',').map((highlight, index) => (
+    <React.Fragment  key={index}>
+     <li className='my-1'>  {highlight.trim()}</li>
+    </React.Fragment>
+  ))}
+</div>
 
             {/* Countdown */}
             <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
@@ -74,10 +144,10 @@ export default function EventPage() {
                 </TableHead>
                 <TableBody>
                   <TableRow>
-                    <TableCell>Kubernetes Community Day Lahore</TableCell>
+                    <TableCell>{event.name}</TableCell>
+                    <TableCell>{event.ticket ? `$${event.ticket}` : 'Free'}</TableCell>
                     <TableCell>0</TableCell>
-                    <TableCell>0</TableCell>
-                    <TableCell>0</TableCell>
+                    <TableCell>{event.ticket ? `$${event.ticket}` : 'Free'}</TableCell>
                     <TableCell>No</TableCell>
                   </TableRow>
                 </TableBody>
@@ -89,26 +159,9 @@ export default function EventPage() {
               Terms & Conditions
             </Typography>
             <Typography variant="body2" paragraph>
-              We are committed to making the participation of all those involved in this event an experience free from harassment of any kind. Kubernetes Community Days are governed by the <Link href="https://events.linuxfoundation.org/code-of-conduct/" target="_blank" rel="noopener">Linux Foundation Code of Conduct</Link> available at:
+              {event.terms_conditions}
             </Typography>
-            <Link href="https://events.linuxfoundation.org/code-of-conduct/" target="_blank" rel="noopener">
-              https://events.linuxfoundation.org/code-of-conduct/
-            </Link>
-            <Typography variant="body2" paragraph>
-              Stay Connected: Stay informed about event details, speaker announcements, and other updates by following us on social media.
-            </Typography>
-            <Typography variant="body2" paragraph>
-              Kubernetes Community Day Lahore is your gateway to the future of cloud-native technology. Join us for an enlightening day of learning, networking, and inspiration. We eagerly anticipate your presence at this landmark event.
-            </Typography>
-            <Typography variant="body2" paragraph>
-              <strong>Severability:</strong> If any provision of these terms and conditions is deemed invalid or unenforceable, the remaining provisions shall remain in full force and effect.
-            </Typography>
-            <Typography variant="body2" paragraph>
-              <strong>Entire Agreement:</strong> These terms and conditions constitute the entire agreement between the parties regarding the Event/Expo and supersede any prior agreements, understandings, or representations, whether written or oral.
-            </Typography>
-            <Typography variant="body2">
-              By registering for the event, participants acknowledge that they have read, understood, and agreed to abide by these terms and conditions with full effect.
-            </Typography>
+          
           </Paper>
         </Grid>
 
@@ -116,32 +169,32 @@ export default function EventPage() {
         <Grid item xs={12} md={5} className=' sticky top-0'>
           <Paper elevation={3} sx={{ p: 3 }}>
             <img
-              src="/images/event-banner.jpg" // Replace with the actual banner image path
+              src={event.banner}
               alt="Event Banner"
               style={{ width: '100%', borderRadius: '8px', marginBottom: '16px' }}
             />
             <Typography variant="h5" gutterBottom>
-              KCD | Kubernetes Community Day Lahore 2024
+              {event.name}
             </Typography>
             <Typography variant="subtitle2" color="textSecondary">
-              By Syed Asad Raza
+              By {event.organizer_id.first_name} {event.organizer_id.last_name}
             </Typography>
             <Typography variant="body2" color="textSecondary" gutterBottom>
-              <strong>Starts on:</strong> September 1, 2024 (10:30 AM)
+              <strong>Starts on:</strong> {new Date(event.date_from).toLocaleString()}
             </Typography>
             <Typography variant="body2" color="textSecondary" gutterBottom>
-              <strong>Ends on:</strong> September 1, 2024 (3:00 PM)
+              <strong>Ends on:</strong> {event.date_to ? new Date(event.date_to).toLocaleString() : 'N/A'}
             </Typography>
             <Typography variant="body2" color="textSecondary" gutterBottom>
-              <strong>Location:</strong> University of Central Punjab | UCP, Khayaban-e-Jinnah Road, Johar Town, Lahore
+              <strong>Location:</strong> {event.location}
             </Typography>
             <Typography variant="body2" color="textSecondary" gutterBottom>
-              <strong>Category:</strong> Technology
+              <strong>Category:</strong> {event.tags.join(', ')}
             </Typography>
             <Typography variant="body2" color="green" gutterBottom>
-              <strong>Free (Physical)</strong>
+              <strong>{event.ticket ? `$${event.ticket}` : 'Free'} ({event.event_type})</strong>
             </Typography>
-            <Button variant="contained" color="warning"  sx={{ mt: 2 }}>
+            <Button variant="contained" color="warning" onClick={handleBuyTicket}  sx={{ mt: 2 }}>
               Buy Tickets
             </Button>
           </Paper>

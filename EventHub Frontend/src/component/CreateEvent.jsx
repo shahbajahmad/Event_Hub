@@ -22,39 +22,54 @@ import {
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import FileUploader from "./FileUploader";
-import { createEvent } from "../service/features/eventSlice";
+import { createEvent, resetEvent } from "../service/features/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { showSnackbar } from "../service/features/snackbarSlice";
 
 const defaultValues = {
-  event_type: 'Physical',
-  entry_type: 'Free',
-  name: 'Tech Innovation Expo 2024',
-  date_from: '2024-09-15',
-  date_to: '2024-09-17',
-  location: 'San Francisco, CA',
-  address: '1234 Innovation Way, San Francisco, CA 94107',
-  contact_number: '123-456-7890',
-  description: 'Join us for the Tech Innovation Expo 2024, where industry leaders showcase the latest in technology and innovation.',
-  banner: '',
-  terms_conditions: 'All attendees must follow the event code of conduct. No refunds will be issued.',
-  video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+  event_type: "Physical",
+  entry_type: "Free",
+  name: "Tech Innovation Expo 2024",
+  date_from: "2024-09-15",
+  date_to: "2024-09-17",
+  location: "San Francisco, CA",
+  address: "1234 Innovation Way, San Francisco, CA 94107",
+  contact_number: "123-456-7890",
+  description:
+    "Join us for the Tech Innovation Expo 2024, where industry leaders showcase the latest in technology and innovation.",
+  banner: "",
+  terms_conditions:
+    "All attendees must follow the event code of conduct. No refunds will be issued.",
+  video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
   social_links: {
-    facebook: 'https://www.facebook.com/TechInnovationExpo',
-    instagram: 'https://www.instagram.com/tech_innovation_expo',
-    linkedin: 'https://www.linkedin.com/company/techinnovationexpo',
-    website: 'https://www.techinnovationexpo.com',
+    facebook: "https://www.facebook.com/TechInnovationExpo",
+    instagram: "https://www.instagram.com/tech_innovation_expo",
+    linkedin: "https://www.linkedin.com/company/techinnovationexpo",
+    website: "https://www.techinnovationexpo.com",
   },
-  tags: ['Technology', 'Innovation', 'Expo'],
+  tags: ["Technology", "Innovation", "Expo"],
+  highlights: [
+    'In-Depth Talks and Workshops',
+    'Networking Opportunities',
+    'Exhibitor Showcase'
+  ],
 };
 
 export default function CreateEvent() {
   const dispatch = useDispatch();
-  const { user: { _id } } = useSelector(state => state.auth);
-  const { isLoading, error, event } = useSelector(state => state.event);
+  const {
+    user: { _id },
+  } = useSelector((state) => state.auth);
+  const { isLoading, error, event } = useSelector((state) => state.event);
   const hasMounted = useRef(false);
 
-  const { register, handleSubmit, control, watch, formState: { errors } } = useForm({ defaultValues });
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    formState: { errors },
+  } = useForm({ defaultValues });
   const entry_type = watch("entry_type");
 
   const onSubmit = (data) => {
@@ -65,13 +80,19 @@ export default function CreateEvent() {
     if (hasMounted.current) {
       if (error) {
         dispatch(showSnackbar({ message: error, severity: "error" }));
-      }else if (event) {
-        dispatch(showSnackbar({ message: "Event created successfully", severity: "success" }));
-      }  
+      } else if (event) {
+        dispatch(
+          showSnackbar({
+            message: "Event created successfully",
+          })
+        );
+        dispatch(resetEvent())
+      }
     } else {
       hasMounted.current = true;
     }
-  }, [event, error,isLoading]);
+  
+  }, [event, error, isLoading]);
 
   return (
     <>
@@ -125,7 +146,9 @@ export default function CreateEvent() {
                 )}
               />
               {errors.event_type && (
-                <Typography color="error">{errors.event_type.message}</Typography>
+                <Typography color="error">
+                  {errors.event_type.message}
+                </Typography>
               )}
 
               <FormLabel component="legend" sx={{ mt: 3 }}>
@@ -151,7 +174,9 @@ export default function CreateEvent() {
                 )}
               />
               {errors.entry_type && (
-                <Typography color="error">{errors.entry_type.message}</Typography>
+                <Typography color="error">
+                  {errors.entry_type.message}
+                </Typography>
               )}
               {entry_type === "Paid" && (
                 <FormControl fullWidth error={!!errors.ticket}>
@@ -196,7 +221,9 @@ export default function CreateEvent() {
                 required
                 margin="normal"
                 type="date"
-                {...register("date_from", { required: "Date from is required" })}
+                {...register("date_from", {
+                  required: "Date from is required",
+                })}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -286,7 +313,11 @@ export default function CreateEvent() {
                     checkFileType: (value) => {
                       const file = value[0];
                       if (!file) return true;
-                      const fileTypes = ["image/jpeg", "image/png", "image/gif"];
+                      const fileTypes = [
+                        "image/jpeg",
+                        "image/png",
+                        "image/gif",
+                      ];
                       return (
                         fileTypes.includes(file.type) ||
                         "Only JPEG, PNG, and GIF images are allowed"
@@ -300,6 +331,8 @@ export default function CreateEvent() {
                 fullWidth
                 label="Terms and Conditions"
                 margin="normal"
+                rows={4}
+                multiline
                 placeholder="Add the Terms and Conditions for the Event"
                 {...register("terms_conditions", {
                   required: "Terms and conditions are required",
@@ -376,13 +409,31 @@ export default function CreateEvent() {
                   },
                 })}
               />
-
+              <TextField
+                fullWidth
+                label="Event Highlights"
+                margin="normal"
+                multiline
+                rows={4}
+                placeholder="Enter Event Highlights (comma-separated)"
+                {...register("highlights", {
+                  required:
+                   
+                   "e.g., In-Depth Talks, Networking Opportunities",
+             
+                })}
+                error={!!errors.highlights}
+                helperText={errors.highlights?.message}
+                
+              />
               <FormLabel component="legend" sx={{ mt: 3 }}>
                 Tags
               </FormLabel>
               <FormGroup row>
                 <FormControlLabel
-                  control={<Checkbox {...register("tags")} value="Technology" />}
+                  control={
+                    <Checkbox {...register("tags")} value="Technology" />
+                  }
                   label="Technology"
                 />
                 <FormControlLabel
@@ -404,26 +455,27 @@ export default function CreateEvent() {
               </FormGroup>
             </Grid>
             <Grid container className="justify-end" sx={{ mt: 0 }}>
-            <Button variant="contained" color="primary" type="submit">
-              Create Event
-            </Button>
+              <Button variant="contained" color="primary" type="submit">
+                Create Event
+              </Button>
+            </Grid>
           </Grid>
-          </Grid>
-
-         
         </form>
       </Paper>
 
       {/* Full-Screen Loader */}
-      <Backdrop  sx={{
-    color: '#fff',
-    zIndex: (theme) => theme.zIndex.drawer + 1,
-    position: 'fixed', 
-    top: 0,
-    left: 0,
-    width: '100vw',    
-    height: '100vh',    
-  }} open={isLoading}>
+      <Backdrop
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+        }}
+        open={isLoading}
+      >
         <CircularProgress color="inherit" />
       </Backdrop>
     </>

@@ -14,12 +14,27 @@ exports.createEvent = async (req, res) => {
 };
 exports.getEvents = async (req, res) => {
   try {
-    const events = await Event.find().populate('organizer_id', 'first_name last_name email');
+    const events = await Event.find({status:"Complete"}).populate('organizer_id', 'first_name last_name email');
     res.json(events);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+exports.getUpcomingEvents = async (req, res) => {
+  try {
+    const currentDate = new Date();
+    const events = await Event.find({ 
+      status: "Approved",
+      date_from: { $gte: currentDate }
+    })
+    .populate('organizer_id', 'first_name last_name email')
+    .sort({ date_from: 1 }) // Sort by the event start date
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 
 exports.getEvent = async (req, res) => {
   try {

@@ -12,7 +12,7 @@ export const fetchUser = createAsyncThunk(
     if (!token) return rejectWithValue("No token available");
 
     try {
-      const response = await fetch(`${apiUrl}/api/users/${userData?._id}`, {
+      const response = await fetch(`${apiUrl}/api/protected/users/${userData?._id}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -39,7 +39,7 @@ export const updateUser = createAsyncThunk(
 
     try {
       const response = await fetch(
-        `${apiUrl}/api/users/${updatedUserData?._id}`,
+        `${apiUrl}/api/protected/users/${updatedUserData?._id}`,
         {
           method: "PUT",
           headers: {

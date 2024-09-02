@@ -26,9 +26,9 @@ export const createEvent = createAsyncThunk(
       const fileUrl = fileData.url;  // Extract the file URL from the upload response
       console.log(eventData)
       // Now create the event with the file URL
-      const response = await fetch(`${apiUrl}/api/events`, {
+      const response = await fetch(`${apiUrl}/api/protected/events`, {
         method: 'POST',
-        body: JSON.stringify({ ...eventData, banner: fileUrl }), // Include the file URL in the event data
+        body: JSON.stringify({ ...eventData, banner: `${apiUrl}${fileUrl} `}), // Include the file URL in the event data
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -54,7 +54,11 @@ const eventSlice = createSlice({
     isLoading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    resetEvent(state){
+state.event = null
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createEvent.pending, (state) => {
@@ -73,3 +77,5 @@ const eventSlice = createSlice({
 });
 
 export default eventSlice.reducer;
+
+export const { resetEvent } = eventSlice.actions;

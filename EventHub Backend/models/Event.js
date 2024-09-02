@@ -15,6 +15,12 @@ const eventSchema = new mongoose.Schema({
   banner: { type: String }, // URL of the uploaded banner image
   terms_conditions: { type: String },
   video_url: { type: String },
+  
+  status: { 
+    type: String, 
+    enum: ['In Process', 'Approved', 'Canceled', 'Complete'], 
+    default: 'Approved' 
+  },
   social_links: {
     facebook: { type: String },
     instagram: { type: String },
@@ -22,6 +28,7 @@ const eventSchema = new mongoose.Schema({
     website: { type: String }
   },
   tags: [{ type: String }], // Array of tags like Technology, Sports, etc.
+  highlights: [{ type: String }], // Array of strings for event highlights
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now }
 });
