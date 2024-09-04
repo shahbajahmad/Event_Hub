@@ -12,7 +12,7 @@ import {
 
 import SalesBarChart from './SalesBarChart';
 
-const Dashboard = () => {
+const OrganizerDashboard = ({upcoming_events}) => {
   return (
     <Box className="min-h-screen bg-gray-100">
   
@@ -26,7 +26,7 @@ const Dashboard = () => {
                 Upcoming Events
               </Typography>
               <Typography variant="h4" className="text-blue-600">
-                12
+              {upcoming_events}
               </Typography>
               <Typography variant="body2" className="text-gray-500">
                 Events scheduled in the next 30 days.
@@ -115,4 +115,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default OrganizerDashboard;

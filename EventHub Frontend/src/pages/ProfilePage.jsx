@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Paper,
   Avatar,
@@ -12,19 +12,26 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
+  CircularProgress,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
-import { useSelector ,useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from "react-hook-form";
 import { updateUser } from '../service/features/userSlice';
+import TicketPreview from '../component/TicketPreview';
+
+
 
 export default function ProfilePage() {
   const { avatarColor } = useSelector((state) => state.userDetail);
-  const { user: { _id,first_name, last_name, email, city = "", gender = "" } } = useSelector((state) => state.auth);
-
+  const { user: { _id, first_name, last_name, email, city = "", gender = "" } } = useSelector((state) => state.auth);
+  
   const [isEditable, setIsEditable] = useState(false);
-
+  const [tickets, setTickets] = useState([]); // Store user tickets
+  const [loadingTickets, setLoadingTickets] = useState(true); // Loading state for tickets
+  const [error, setError] = useState(false); // Loading state for tickets
+  
   const { register, handleSubmit, formState: { errors }, watch, setValue } = useForm({
     defaultValues: {
       first_name: first_name,
@@ -34,15 +41,36 @@ export default function ProfilePage() {
       gender: gender,
     },
   });
- const firstname = watch("first_name")
- const lastname = watch("last_name")
+  
+  const firstname = watch("first_name");
+  const lastname = watch("last_name");
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+  // Fetch user tickets
+  useEffect(() => {
+    const fetchUserTickets = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/protected/tickets/user/${_id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        const data = await response.json();
+        setTickets(data); // Store the tickets in state
+        setLoadingTickets(false);
+      } catch (error) {
+        console.error("Error fetching tickets", error);
+        setLoadingTickets(false);
+        setError(true)
+      }
+    };
+
+    fetchUserTickets();
+  }, [_id]);
 
   const onSubmit = (data) => {
-
     dispatch(updateUser({ ...data, _id }));
-    
     setIsEditable(false);
   };
 
@@ -72,20 +100,7 @@ export default function ProfilePage() {
           <Typography variant="h5" sx={{ mt: 2 }} className="capitalize">
             {`${firstname} ${lastname}`} <span style={{ color: '#00f' }}>•</span>
           </Typography>
-          <Grid container justifyContent="center" sx={{ mt: 2 }}>
-            <Grid item xs={6} sm={3}>
-              <Typography variant="h6">0</Typography>
-              <Typography variant="body2" color="textSecondary">
-                Events Attended
-              </Typography>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Typography variant="h6">0.00</Typography>
-              <Typography variant="body2" color="textSecondary">
-                Total Spending on Tickets (Rupees)
-              </Typography>
-            </Grid>
-          </Grid>
+      
         </Box>
       </Paper>
 
@@ -116,19 +131,21 @@ export default function ProfilePage() {
               )}
             </Grid>
             <Grid item xs={12} sm={6}>
-           
-              {isEditable ? (<>
-                <Typography variant="subtitle2">Last Name:</Typography>
-                <TextField
-                {...register("last_name", { required: "First name is required" })}
-                  fullWidth
-                  error={!!errors.last_name}
-                  helperText={errors.last_name?.message}
-                /></>
-              ) : (<> <Typography variant="subtitle2">Email:</Typography>
-              <Typography variant="body1">{email}
-                </Typography></>
-                
+              {isEditable ? (
+                <>
+                  <Typography variant="subtitle2">Last Name:</Typography>
+                  <TextField
+                    {...register("last_name", { required: "First name is required" })}
+                    fullWidth
+                    error={!!errors.last_name}
+                    helperText={errors.last_name?.message}
+                  />
+                </>
+              ) : (
+                <>
+                  <Typography variant="subtitle2">Email:</Typography>
+                  <Typography variant="body1">{email}</Typography>
+                </>
               )}
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -175,9 +192,17 @@ export default function ProfilePage() {
           Ticket Preview
         </Typography>
         <Divider sx={{ mb: 2 }} />
-        <Box sx={{ textAlign: 'right' }}>
-          <Button endIcon={<EditIcon />}>scroll</Button>
-        </Box>
+        {loadingTickets ? (
+          <CircularProgress />
+        ) : error ?<Typography variant="body1">No ticket available to preview</Typography> :tickets && tickets.length > 0 ? (
+          tickets.map((ticket) => (
+            <TicketPreview key={ticket._id} ticket={ticket} />
+          ))
+        ) :(
+          <Typography variant="body1">
+            No tickets available.
+          </Typography>
+        )}
       </Paper>
     </Box>
   );

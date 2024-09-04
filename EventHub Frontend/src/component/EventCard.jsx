@@ -21,10 +21,16 @@ export default function EventCard({ event ,isLoading }) {
     ) : (
       <Link to={`/event/${event._id}`} className="min-w-[200px] sm:w-[23.33%] hover:scale-110 cursor-pointer transition-all hover:text-gray-800">
         <Card sx={{ maxWidth: 345, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', position: 'relative' }}>
-          {event.entry_type === 'Free' && (
-            <div className=' absolute top-0 left-0 bg-orange-500 px-5 py-1 z-10'>
+          {event.entry_type === 'Free' ? (
+            <div className=' absolute top-0 left-0 bg-green-800 px-5 py-1 z-10'>
               <Typography variant="caption" style={{ color: 'white' }}>
                 Free
+              </Typography>
+            </div>
+          ):(
+            <div className=' absolute top-0 left-0 bg-red-500 px-5 py-1 z-10'>
+              <Typography variant="caption" style={{ color: 'white' }} className=' font-bold text-lg'>
+                {event.ticket_price}$
               </Typography>
             </div>
           )}

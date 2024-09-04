@@ -25,13 +25,14 @@ import FileUploader from "./FileUploader";
 import { createEvent, resetEvent } from "../service/features/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { showSnackbar } from "../service/features/snackbarSlice";
-
+import {fetchUser} from "../service/features/userSlice"
 const defaultValues = {
   event_type: "Physical",
   entry_type: "Free",
   name: "Tech Innovation Expo 2024",
   date_from: "2024-09-15",
   date_to: "2024-09-17",
+  ticket_quantity:100,
   location: "San Francisco, CA",
   address: "1234 Innovation Way, San Francisco, CA 94107",
   contact_number: "123-456-7890",
@@ -58,7 +59,7 @@ const defaultValues = {
 export default function CreateEvent() {
   const dispatch = useDispatch();
   const {
-    user: { _id },
+    user,
   } = useSelector((state) => state.auth);
   const { isLoading, error, event } = useSelector((state) => state.event);
   const hasMounted = useRef(false);
@@ -73,7 +74,7 @@ export default function CreateEvent() {
   const entry_type = watch("entry_type");
 
   const onSubmit = (data) => {
-    dispatch(createEvent({ ...data, organizer_id: _id }));
+    dispatch(createEvent({ ...data, organizer_id: user._id }));
   };
 
   useEffect(() => {
@@ -81,12 +82,14 @@ export default function CreateEvent() {
       if (error) {
         dispatch(showSnackbar({ message: error, severity: "error" }));
       } else if (event) {
+        dispatch(fetchUser(user))
         dispatch(
           showSnackbar({
             message: "Event created successfully",
           })
         );
         dispatch(resetEvent())
+       
       }
     } else {
       hasMounted.current = true;
@@ -179,12 +182,12 @@ export default function CreateEvent() {
                 </Typography>
               )}
               {entry_type === "Paid" && (
-                <FormControl fullWidth error={!!errors.ticket}>
+                <FormControl fullWidth error={!!errors.ticket_price}>
                   <InputLabel htmlFor="outlined-adornment-amount">
                     Amount
                   </InputLabel>
                   <OutlinedInput
-                    {...register("ticket", {
+                    {...register("ticket_price", {
                       required: "Amount is required",
                       min: {
                         value: 10,
@@ -197,9 +200,10 @@ export default function CreateEvent() {
                     }
                     label="Amount"
                     type="number"
+              
                   />
-                  {errors.ticket && (
-                    <FormHelperText>{errors.ticket.message}</FormHelperText>
+                  {errors.ticket_price && (
+                    <FormHelperText >{errors.ticket_price.message}</FormHelperText>
                   )}
                 </FormControl>
               )}
@@ -214,6 +218,25 @@ export default function CreateEvent() {
                 error={!!errors.name}
                 helperText={errors.name?.message}
               />
+<TextField
+  fullWidth
+  label="Ticket Quantity"
+  required
+  margin="normal"
+  type="number"
+  {...register("ticket_quantity", {
+    required: "Ticket quantity is required",
+    min: {
+      value: 1,
+      message: "Ticket quantity must be at least 1",
+    },
+  })}
+  InputLabelProps={{
+    shrink: true,
+  }}
+  error={!!errors.ticket_quantity}
+  helperText={errors.ticket_quantity?.message}
+/>
 
               <TextField
                 fullWidth

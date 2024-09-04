@@ -4,6 +4,8 @@ import modalReducer from '../features/modalSlice';
 import userProfileReducer from '../features/userSlice'; 
 import eventReducer from '../features/eventSlice'; 
 import snackbarReducer from '../features/snackbarSlice'; 
+import analyticsReducer from '../features/analyticsSlice'; 
+
 const store = configureStore({
 
     reducer:{
@@ -11,7 +13,8 @@ const store = configureStore({
         modal: modalReducer,
         userDetail:userProfileReducer,
         event:eventReducer,
-        snackbar:snackbarReducer
+        snackbar:snackbarReducer,
+        analytics:analyticsReducer
     }
 });
 

@@ -9,7 +9,7 @@ export default function HomePage() {
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [items, setitems] = useState([])
   useEffect(() => {
     // Fetch all events
     const fetchEvents = async () => {
@@ -43,19 +43,27 @@ export default function HomePage() {
 
     fetchEvents();
     fetchUpcomingEvents();
+    
   }, []);
-  const items = upcomingEvents.map((item) => (
-    <div key={item.name} className=' overflow-y-hidden max-h-[200px] sm:max-h-[200px] px-0 sm:px-10'>
-       <img src={item.banner} alt={item.name} className='w-[600px] mx-auto h-full object-cover  object-center' />
-    </div>
-));
+
+  useEffect(() => {
+    const items = upcomingEvents.filter((item, i) => i < 3) // Filter only the first 3 items
+    .map((item, i) => (
+      <div key={item.name} className=' overflow-y-hidden max-h-[200px] sm:max-h-[300px] px-0 sm:px-10'>
+        <img src={item.banner} alt={item.name} className='w-[600px] mx-auto h-full object-contain' />
+      </div>
+    ));
+  setitems(items)
+  }, [upcomingEvents]);
+
   return (
+    
     <div className="space-y-14">
-      <HomeCarousel event={items}/>
+      <HomeCarousel items={items}/>
 
       <div className="mx-auto space-y-6 max-w-7xl px-5 sm:px-6 lg:px-8">
         <Typography variant="h4" fontWeight={"bold"}>
-          Upcoming Events
+          Upcoming <span className="text-orange-400 font-extrabold">Events</span>
         </Typography>
         <div className="flex flex-col gap-5 flex-wrap w-full justify-start items-center sm:items-start sm:flex-row">
           {isLoading
@@ -68,7 +76,7 @@ export default function HomePage() {
                 />
               ))
             : upcomingEvents?.map((item, i) =>
-                i <= 4 ? (
+                i <= 3 ? (
                   <EventCard key={item._id} event={item} isLoading={isLoading}/>
                 ) : null
               )}

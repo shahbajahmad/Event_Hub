@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Event = require('./Event'); // Assuming Event model is in the same directory
 const Ticket = require('./Ticket');
 const Payment = require('./Payment');
-const Registration = require('./Registration');
+
 
 const analyticsSchema = new mongoose.Schema({
   total_events: { type: Number, default: 0 },
@@ -39,11 +39,6 @@ analyticsSchema.statics.calculateAndUpdate = async function() {
 
   // Calculate total revenue (same as total sales in this example)
   analytics.total_revenue = analytics.total_sales;
-
-  // Calculate new registrations (e.g., registrations within the last 30 days)
-  analytics.new_registrations = await Registration.countDocuments({
-    registered_at: { $gte: new Date(new Date().setDate(new Date().getDate() - 1)) }
-  });
 
   // Save the updated analytics
   await analytics.save();

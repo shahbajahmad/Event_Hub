@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useForm } from "react-hook-form";
+
 import {
   Disclosure,
   DisclosureButton,
@@ -18,7 +20,7 @@ import { TextField } from "@mui/material";
 import { useDispatch, useSelector } from 'react-redux';
 import { openModal, closeModal } from '../service/features/modalSlice';
 import { logout } from '../service/features/authSlice';
-import { showSnackbar,setPosition, resetPosition } from "../service/features/snackbarSlice";
+import { showSnackbar } from "../service/features/snackbarSlice";
 
 
 const Navbar = () => {
@@ -27,7 +29,9 @@ const Navbar = () => {
   const { isOpen } = useSelector((state) => state.modal);
   const { user, token } = useSelector((state) => state.auth);
   const [isSearchVisible, setIsSearchVisible] = useState(true);
- 
+  const form = useForm();
+  const { register,watch } = form;
+  const search = watch("search")
   const navigation = [
     { name: "Home", to: "/", current: location.pathname === "/" },
     
@@ -56,7 +60,11 @@ const Navbar = () => {
     dispatch(showSnackbar({message:"Logout successful"}))
     dispatch(logout());
   };
+  useEffect(() => {
+    
 
+  }, [user])
+  
 
   return (
     <>
@@ -66,11 +74,13 @@ const Navbar = () => {
         }  left-[5%] p-5 sm:p-8 md:p-10 rounded-lg w-[90%] md:w-[24%]  bg-white md:left-[40%] z-[99] transition-transform duration-300 ease-in-out`}
       >
         <div className="bg-white rounded-md  flex justify-center items-center  ">
-          <TextField fullWidth label="Search With Event ID" id="search" />
-          <SearchSharpIcon
+          <TextField fullWidth label="Search With Event ID" id="search" {...register("search")}/>
+       <Link to={`/event/${search}` }>   
+         <div className=" cursor-pointer"><SearchSharpIcon
+          
             color="primary"
             className="relative text-[2.35rem] ms-2"
-          />
+          /></div> </Link>
         </div>
       </div>
 
@@ -115,7 +125,7 @@ const Navbar = () => {
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
                   {navigation.map((item) => {
-                   if (item.name === "Dashboard" && !token) {
+                   if (item.name === "Dashboard" && ( user?.role !== "Organizer")) {
                     return null
                    } 
                  return   <Link

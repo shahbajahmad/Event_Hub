@@ -1,11 +1,17 @@
 
 const Event = require('../models/Event');
+const User = require('../models/User');
 
 
 exports.createEvent = async (req, res) => {
   try {
 
     const event = new Event(req.body);
+    const userId = event.organizer_id
+    const user = await User.findById(userId)
+    user.role = "Organizer"
+    await user.save()
+    event.ticket_quantity_left = event.ticket_quantity
     await event.save();
     res.status(201).json(event);
   } catch (error) {
