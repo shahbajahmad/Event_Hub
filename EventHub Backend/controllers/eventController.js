@@ -40,7 +40,20 @@ exports.getUpcomingEvents = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.getOrganizerEvents = async (req, res) => {
+  try {
+    const organizerId = req.params.organizerId;
+    
+    const events = await Event.find({ organizer_id: organizerId }).populate('organizer_id', 'first_name last_name email');
+    if (!events || events.length === 0) {
+      return res.status(404).json({ error: 'No events found for this organizer' });
+    }
 
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 exports.getEvent = async (req, res) => {
   try {

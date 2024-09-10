@@ -6,6 +6,7 @@ import OrganizerDashboard from '../component/OrganizerDashboard';
 import { updateAnalytics } from '../service/features/analyticsSlice';
 import { Backdrop,
   CircularProgress,} from "@mui/material"
+import Sidebar from '../component/SideBar';
 
 export default function DashboardPage() {
 
@@ -36,6 +37,7 @@ const dispatch = useDispatch();
 
   return (
     <div>
+      {/* <Sidebar/> */}
           <MiniDashboard
         noOfEvents={analytics?.total_events}
         totalSales={analytics?.total_sales}

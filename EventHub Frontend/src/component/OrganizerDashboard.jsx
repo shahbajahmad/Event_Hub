@@ -1,21 +1,25 @@
-import React from 'react';
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Box,
-  Grid,
-  Paper,
-  Button,
-} from '@mui/material';
+import React, { useEffect } from 'react';
+import { Typography, Box, Divider, Grid, Paper, CircularProgress } from '@mui/material';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchOrganizerEvents } from '../service/features/eventSlice';
+import OrganizerEvent from './OrganizerEvent';
 
-import SalesBarChart from './SalesBarChart';
+const OrganizerDashboard = ({upcomingEvents}) => {
+  const dispatch = useDispatch();
+  const {
+    organizerEvents,
+    error,
+    isLoading,
+  } = useSelector((state) => state.event);
+  
+  const { user: { _id } } = useSelector((state) => state.auth);
 
-const OrganizerDashboard = ({upcoming_events}) => {
+  useEffect(() => {
+    dispatch(fetchOrganizerEvents(_id)); // Fetch organizer's tickets
+  }, [dispatch, _id]);
+
   return (
     <Box className="min-h-screen bg-gray-100">
-  
       {/* Content */}
       <Box className="p-6">
         <Grid container spacing={4}>
@@ -26,7 +30,7 @@ const OrganizerDashboard = ({upcoming_events}) => {
                 Upcoming Events
               </Typography>
               <Typography variant="h4" className="text-blue-600">
-              {upcoming_events}
+                {isLoading ? <CircularProgress size={24} /> : upcomingEvents}
               </Typography>
               <Typography variant="body2" className="text-gray-500">
                 Events scheduled in the next 30 days.
@@ -64,51 +68,25 @@ const OrganizerDashboard = ({upcoming_events}) => {
 
           {/* Graph/Charts */}
           <Grid item xs={12} md={8}>
-            <Paper className="p-4 shadow-lg bg-white">
-              <Typography variant="h6" className="mb-4">
-                Sales Overview
+            <Paper elevation={3} sx={{ p: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                Event Organized
               </Typography>
-              {/* Placeholder for a chart */}
-              <Box className="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
-                <Typography variant="h5" className="text-gray-500">
-               <SalesBarChart/>
-                </Typography>
-              </Box>
+              <Divider sx={{ mb: 2 }} />
+              {isLoading ? (
+                <CircularProgress />
+              ) : error ? (
+                <Typography variant="body1">No ticket available to preview</Typography>
+              ) : organizerEvents && organizerEvents.length > 0 ? (
+                organizerEvents.map((event) => (
+                  <OrganizerEvent key={event._id} event={event} />
+                ))
+              ) : (
+                <Typography variant="body1">No tickets available.</Typography>
+              )}
             </Paper>
           </Grid>
 
-          {/* Recent Activities */}
-          <Grid item xs={12} md={4}>
-            <Paper className="p-4 shadow-lg bg-white">
-              <Typography variant="h6" className="mb-4">
-                Recent Activities
-              </Typography>
-              <ul className="list-none">
-                <li className="mb-2">
-                  <Typography variant="body1">
-                    <span className="font-bold">User1</span> registered for <span className="font-bold">Event1</span>.
-                  </Typography>
-                </li>
-                <li className="mb-2">
-                  <Typography variant="body1">
-                    <span className="font-bold">User2</span> bought a ticket for <span className="font-bold">Event2</span>.
-                  </Typography>
-                </li>
-                <li className="mb-2">
-                  <Typography variant="body1">
-                    <span className="font-bold">User3</span> commented on <span className="font-bold">Event3</span>.
-                  </Typography>
-                </li>
-                <li className="mb-2">
-                  <Typography variant="body1">
-                    <span className="font-bold">User4</span> updated the details of <span className="font-bold">Event4</span>.
-                  </Typography>
-                </li>
-              </ul>
-            </Paper>
-          </Grid>
-
-          
         </Grid>
       </Box>
     </Box>
