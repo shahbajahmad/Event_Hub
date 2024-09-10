@@ -5,7 +5,6 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const mainRouter = require('./routes/mainRouter');
 const authRouter = require('./routes/authRoutes/authRouter');
-const adminRouter = require('./routes/adminRoutes/adminRouter');
 
 const uploadRouter = require('./routes/uploadRouter');
 const { connectDb } = require('./config');
@@ -37,7 +36,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', mainRouter);
 app.use('/auth', authRouter);
 app.use('/upload', uploadRouter);
-app.use('/admin', adminRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
