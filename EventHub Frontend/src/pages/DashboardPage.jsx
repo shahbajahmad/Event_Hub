@@ -1,49 +1,33 @@
-import React, { useEffect } from 'react';
+import {React,useEffect} from 'react';
+import MiniDashboard from '../component/Dashboard/MiniDashboard';
+import AdminDashboard from '../component/Dashboard/AdminDashboard';
+import OrganizerDashboard from '../component/Dashboard/OrganizerDashboard';
 import { useDispatch, useSelector } from 'react-redux';
-import MiniDashboard from '../component/MiniDashboard';
-import AdminDashboard from '../component/AdminDashboard';
-import OrganizerDashboard from '../component/OrganizerDashboard';
-import { updateAnalytics } from '../service/features/analyticsSlice';
-import { Backdrop,
-  CircularProgress,} from "@mui/material"
-import Sidebar from '../component/SideBar';
+import MainLayout from '../component/Dashboard/MainLayout';
+import { fetchOrganizerEvents } from '../service/features/eventSlice';
 
 export default function DashboardPage() {
 
- const {user:{role}} = useSelector((state)=>{return state.auth})
-const dispatch = useDispatch();
-  const { data: analytics, loading } = useSelector((state) => state.analytics); // Fetch analytics state
-
+  const { user: { role } } = useSelector((state) => state.auth);
+  const { data: analytics } = useSelector((state) => state.analytics);
+  const { user: { _id } } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(updateAnalytics()); // Fetch analytics data on page load
-  }, [dispatch]);
-
-  if (loading) {
-    return   <Backdrop
-    sx={{
-      color: "#fff",
-      zIndex: (theme) => theme.zIndex.drawer + 1,
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100vw",
-      height: "100vh",
-    }}
-    open={loading}
-  >
-    <CircularProgress color="inherit" />
-  </Backdrop>; // Display a loading state while analytics data is being fetched
-  }
+    dispatch(fetchOrganizerEvents(_id)); // Fetch organizer's tickets
+  }, [dispatch, _id]);
 
   return (
-    <div>
-      {/* <Sidebar/> */}
-          <MiniDashboard
+    <MainLayout>
+      <MiniDashboard
         noOfEvents={analytics?.total_events}
         totalSales={analytics?.total_sales}
         soldTickes={analytics?.sold_tickets}
       />
-        
-         {role === "Admin"?  <AdminDashboard/> : role === "Organizer" ?<OrganizerDashboard upcoming_events={analytics?.upcoming_events || 0}/>:null}</div>
-  )
+      {role === "Admin" ? (
+        <AdminDashboard />
+      ) : role === "Organizer" ? (
+        <OrganizerDashboard upcoming_events={analytics?.upcoming_events || 0} />
+      ) : null}
+    </MainLayout>
+  );
 }

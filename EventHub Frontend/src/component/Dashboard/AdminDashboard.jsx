@@ -10,8 +10,6 @@ import {
   Button,
 } from '@mui/material';
 
-import SalesBarChart from './SalesBarChart';
-
 const AdminDashboard = () => {
   return (
     <Box className="min-h-screen bg-gray-100">
@@ -71,7 +69,7 @@ const AdminDashboard = () => {
               {/* Placeholder for a chart */}
               <Box className="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
                 <Typography variant="h5" className="text-gray-500">
-               <SalesBarChart/>
+            
                 </Typography>
               </Box>
             </Paper>
