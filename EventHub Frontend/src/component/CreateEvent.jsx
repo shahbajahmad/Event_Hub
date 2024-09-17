@@ -27,12 +27,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { showSnackbar } from "../service/features/snackbarSlice";
 import {fetchUser} from "../service/features/userSlice"
 import { DevTool } from "@hookform/devtools";
+
+
+const today = new Date();
+today.setDate(today.getDate() + 1);
+const formattedDate = today.toISOString().split('T')[0];
 const defaultValues = {
   event_type: "Physical",
   entry_type: "Free",
   name: "Tech Innovation Expo 2024",
-  date_from: "2024-09-15",
-  date_to: "2024-09-17",
+  date_from: formattedDate,
+  date_to:  formattedDate,
   ticket_quantity:100,
   location: "San Francisco, CA",
   address: "1234 Innovation Way, San Francisco, CA 94107",

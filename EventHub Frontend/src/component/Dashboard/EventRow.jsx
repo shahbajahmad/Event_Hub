@@ -9,7 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
-import { yellow } from '@mui/material/colors';
+
 export default function EditEventRow({ event }) {
   const dispatch = useDispatch();
   const currentDate = new Date();
@@ -74,17 +74,17 @@ export default function EditEventRow({ event }) {
           {role ==="Admin" ? (
           <>
             {/* Approve with Icon */}
-            <IconButton color="success" onClick={handleApprove} disabled={event.status === "Approved"}>
+            <IconButton color="success" onClick={handleApprove} disabled={event.status === "Approved" ||event.status === "Complete" }>
               <CheckIcon />
             </IconButton>
 
             {/* Reject with Icon */}
-            <IconButton color="warning" onClick={handleReject} disabled={event.status === "Rejected"}>
+            <IconButton color="warning" onClick={handleReject} disabled={event.status === "Reject"||event.status === "Complete" }>
               <CloseIcon />
             </IconButton>
 
             {/* Delete with Icon */}
-            <IconButton color="error" onClick={handleDelete}>
+            <IconButton color="error" onClick={handleDelete} disabled={event.status === "Complete" }>
               <DeleteIcon />
             </IconButton>
           </>

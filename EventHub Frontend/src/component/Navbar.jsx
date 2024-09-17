@@ -125,7 +125,7 @@ const Navbar = () => {
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
                   {navigation.map((item) => {
-                   if (item.name === "Dashboard" && ( user?.role == "Attendee")) {
+                   if (item.name === "Dashboard" &&  ( user?.role == "Attendee" || !user)) {
                     return null
                    } 
                  return   <Link

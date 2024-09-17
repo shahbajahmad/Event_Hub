@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react';
-import { Grid, Paper, Typography, Divider, CircularProgress, Box } from '@mui/material';
+import React, { useEffect,useState } from 'react';
+import { Grid, Paper, Typography, Divider, CircularProgress, Box, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import UserRow from '../UserRow'; // Assuming you have a UserRow component like EventRow
 import { fetchAllUsers } from '../../../service/features/userSlice'; // Adjust path to match your setup
 
 export default function AllUserPage() {
   const dispatch = useDispatch();
-  
+   // State for sorting by status
+   const [selectedRole, setSelectedRole] = useState('');
+
   // Fetch users from the Redux store
   const { users, error, isLoading } = useSelector((state) => state.userDetail);
 
@@ -15,6 +17,14 @@ export default function AllUserPage() {
     dispatch(fetchAllUsers());
   }, [dispatch]);
 
+  const handleRoleChange = (user) => {
+    setSelectedRole(user.target.value);
+  };
+
+  // Filter events based on selected status
+  const filteredUsers = selectedRole
+    ? users.filter(user => user.role === selectedRole)
+    : users;
   return (
     <div className="min-h-screen p-4">
       <Grid container spacing={3}>
@@ -23,6 +33,19 @@ export default function AllUserPage() {
           <Typography variant="h5" className="font-light mb-4">All Users</Typography>
           <Paper elevation={3} className="p-4 overflow-auto">
          
+          <RadioGroup
+            row
+            value={selectedRole}
+            onChange={handleRoleChange}
+            aria-label="status-filter"
+          >
+            <FormControlLabel value="" control={<Radio />} label="All" />
+            <FormControlLabel value="Admin" control={<Radio />} label="Admin" />
+            <FormControlLabel value="Organizer" control={<Radio />} label="Organizer" />
+            <FormControlLabel value="Attendee" control={<Radio />} label="Attendee" />
+           
+
+          </RadioGroup>
     {/* Header */}
     <Box display="flex" justifyContent="space-between" alignItems="center" p={2} borderBottom="2px solid #e0e0e0" fontWeight="bold">
   <Box display="flex" alignItems="center" width="30%">
@@ -45,8 +68,8 @@ export default function AllUserPage() {
               <CircularProgress />
             ) : error ? (
               <Typography>No users available.</Typography>
-            ) : users.length > 0 ? (
-              users.map(user => <UserRow key={user._id} user={user} />) // Render a UserRow component for each user
+            ) : filteredUsers.length > 0 ? (
+              filteredUsers.map(user => <UserRow key={user._id} user={user} />) // Render a UserRow component for each user
             ) : (
               <Typography>No users found.</Typography>
             )}
