@@ -99,7 +99,7 @@ export default function HomePage() {
                 />
               ))
             : events?.map((item, i) =>
-                i <= 4 ? (
+                i < 4? (
                   <EventCard key={item._id} event={item} isLoading={isLoading}/>
 
                 ) : null

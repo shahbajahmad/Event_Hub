@@ -5,6 +5,7 @@ import userProfileReducer from '../features/userSlice';
 import eventReducer from '../features/eventSlice'; 
 import snackbarReducer from '../features/snackbarSlice'; 
 import analyticsReducer from '../features/analyticsSlice'; 
+import sideBarSlice from "../features/sideBarSlice";
 
 const store = configureStore({
 
@@ -14,7 +15,8 @@ const store = configureStore({
         userDetail:userProfileReducer,
         event:eventReducer,
         snackbar:snackbarReducer,
-        analytics:analyticsReducer
+        analytics:analyticsReducer,
+        sideBar:sideBarSlice
     }
 });
 

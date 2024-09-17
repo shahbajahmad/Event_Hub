@@ -1,6 +1,6 @@
 
 const Event = require('../models/Event');
-const User = require('../models/User');
+const User= require('../models/User');
 
 
 exports.createEvent = async (req, res) => {
@@ -18,6 +18,7 @@ exports.createEvent = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
 exports.getEvents = async (req, res) => {
   try {
     const events = await Event.find({status:"Complete"}).populate('organizer_id', 'first_name last_name email');
@@ -31,7 +32,6 @@ exports.getUpcomingEvents = async (req, res) => {
     const currentDate = new Date();
     const events = await Event.find({ 
       status: "Approved",
-      date_from: { $gte: currentDate }
     })
     .populate('organizer_id', 'first_name last_name email')
     .sort({ date_from: 1 }) // Sort by the event start date
@@ -40,6 +40,7 @@ exports.getUpcomingEvents = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 exports.getOrganizerEvents = async (req, res) => {
   try {
     const organizerId = req.params.organizerId;
@@ -63,16 +64,38 @@ exports.getEvent = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }}
+
 exports.updateEvent = async (req, res) => {
   try {
-    const event = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!event) return res.status(404).json({ error: 'Event not found' });
+    const eventId = req.params.id;
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+
+    // Check if a new banner is provided
+    if (req.file) {
+      // First delete the existing banner
+      const bannerPath = path.join(__dirname, '..', 'uploads', 'banners', path.basename(event.banner));
+      fs.unlink(bannerPath, (err) => {
+        if (err) {
+          console.log('Failed to delete old banner', err);
+        }
+      });
+
+      // Update with the new banner URL
+      event.banner = `${apiUrl}/uploads/${req.file.filename}`;
+    }
+
+    // Update the other event fields
+    Object.assign(event, req.body);
+    
+    await event.save();
     res.json(event);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
-
 exports.deleteEvent = async (req, res) => {
   try {
     const event = await Event.findByIdAndDelete(req.params.id);

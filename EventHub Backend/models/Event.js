@@ -20,8 +20,8 @@ const eventSchema = new mongoose.Schema({
   
   status: { 
     type: String, 
-    enum: ['In Process', 'Approved', 'Canceled', 'Complete'], 
-    default: 'Approved' 
+    enum: ['In Process', 'Approved', 'Reject', 'Complete'], 
+    default: 'In Process' 
   },
   social_links: {
     facebook: { type: String },

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   TextField,
   Button,
@@ -21,96 +21,89 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import FileUploader from "./FileUploader";
-import { createEvent, resetEvent } from "../service/features/eventSlice";
+import FileUploader from "../../component/FileUploader";
+import { resetEvent, updateEvent } from "../../service/features/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { showSnackbar } from "../service/features/snackbarSlice";
-import {fetchUser} from "../service/features/userSlice"
+import { showSnackbar } from "../../service/features/snackbarSlice";
 import { DevTool } from "@hookform/devtools";
-const defaultValues = {
-  event_type: "Physical",
-  entry_type: "Free",
-  name: "Tech Innovation Expo 2024",
-  date_from: "2024-09-15",
-  date_to: "2024-09-17",
-  ticket_quantity:100,
-  location: "San Francisco, CA",
-  address: "1234 Innovation Way, San Francisco, CA 94107",
-  contact_number: "123-456-7890",
-  description:
-    "Join us for the Tech Innovation Expo 2024, where industry leaders showcase the latest in technology and innovation.",
-  banner: "",
-  terms_conditions:
-    "All attendees must follow the event code of conduct. No refunds will be issued.",
-  video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-  social_links: {
-    facebook: "https://www.facebook.com/TechInnovationExpo",
-    instagram: "https://www.instagram.com/tech_innovation_expo",
-    linkedin: "https://www.linkedin.com/company/techinnovationexpo",
-    website: "https://www.techinnovationexpo.com",
-  },
-  tags: ["Technology", "Innovation", "Expo"],
-  highlights: [
-    'In-Depth Talks and Workshops',
-    'Networking Opportunities',
-    'Exhibitor Showcase'
-  ],
-};
 
-export default function CreateEvent() {
+export default function EditEvent() {
   const dispatch = useDispatch();
-  const {
-    user,
-  } = useSelector((state) => state.auth);
-  const { isLoading, error, event } = useSelector((state) => state.event);
-  const hasMounted = useRef(false);
+  const { user } = useSelector((state) => state.auth);
+  const { isLoading, editEvent, error, event } = useSelector(
+    (state) => state.event
+  );
+  
+  const hasMounted = useRef(false); // Used to track component mount
+  
+  // Format the date to "YYYY-MM-DD"
+  const formatDate = (dateString) => {
+    return dateString ? new Date(dateString).toISOString().split("T")[0] : "";
+  };
 
+  // Initializing react-hook-form
   const {
     register,
     handleSubmit,
     control,
     watch,
     formState: { errors },
-  } = useForm({ defaultValues });
+  } = useForm({
+    defaultValues: {
+      ...editEvent,
+      uploadImage:"No",
+      date_from: formatDate(editEvent?.date_from),
+      date_to: formatDate(editEvent?.date_to),
+      tags: editEvent?.tags || [],
+      ticket_offset:0
+    },
+  });
+
   const entry_type = watch("entry_type");
-
+  const uploadImage = watch("uploadImage");
+  // Form submission handler
   const onSubmit = (data) => {
-    dispatch(createEvent({ ...data, organizer_id: user._id }));
+    dispatch(
+      updateEvent({
+        eventId: editEvent?._id, 
+        eventData: { ...data, organizer_id: user._id },
+        uploadImage 
+      })
+    );
   };
-
+  const ticket_offset = watch("ticket_offset")
+  // Triggering the Snackbar based on the event or error state changes
   useEffect(() => {
     if (hasMounted.current) {
       if (error) {
         dispatch(showSnackbar({ message: error, severity: "error" }));
       } else if (event) {
-        dispatch(fetchUser(user))
         dispatch(
           showSnackbar({
-            message: "Event created successfully",
+            message: "Event updated successfully",
+            severity: "success",
           })
         );
-        dispatch(resetEvent())
-       
+        dispatch(resetEvent()); // Reset the event state after success
       }
     } else {
       hasMounted.current = true;
     }
-  
-  }, [event, error, isLoading]);
+  }, [event, error, isLoading, dispatch]);
 
   return (
     <>
       <Paper elevation={3} sx={{ maxWidth: "1200px", mx: "auto", p: 4, mt: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Create An Event
+          Edit An Event
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
-          Create an event to enjoy all the services
+          update an event to statisfy your requirement
         </Typography>
 
-        <div className="w-full overflow-y-hidden h-[100px] sm:h-[200px] relative my-2 sm:my-8">
+        <div className="w-full overflow-y-hidden h-[100px] sm:h-[500px] relative my-2 sm:my-8 object-fit">
           <img
-            src="/images/event-banner.jpg"
+            src={editEvent.banner}
             alt="Event Banner"
             className="absolute -bottom-10 sm:-bottom-32 left-0 w-full object-cover"
             style={{ width: "100%", borderRadius: "8px", marginBottom: "24px" }}
@@ -201,10 +194,11 @@ export default function CreateEvent() {
                     }
                     label="Amount"
                     type="number"
-              
                   />
                   {errors.ticket_price && (
-                    <FormHelperText >{errors.ticket_price.message}</FormHelperText>
+                    <FormHelperText>
+                      {errors.ticket_price.message}
+                    </FormHelperText>
                   )}
                 </FormControl>
               )}
@@ -219,52 +213,65 @@ export default function CreateEvent() {
                 error={!!errors.name}
                 helperText={errors.name?.message}
               />
+              <TextField
+                fullWidth
+                label="Increase Ticket Quantity"
+                required
+                margin="normal"
+                type="number"
+                {...register("ticket_offset", {
+                  required: "Ticket Quantity number is required",
+                  min: {
+                    value: 0,
+                    message: `The number couldn't be less than ${0}`,
+                  },
+                })}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                error={!!errors.ticket_offset}
+                helperText={errors.ticket_offset?.message?errors.ticket_offset?.message:`Total Tickets :${editEvent.ticket_quantity+Number(ticket_offset)}`}
+              />
+
 <TextField
   fullWidth
-  label="Ticket Quantity"
+  label="Date From"
   required
   margin="normal"
-  type="number"
-  {...register("ticket_quantity", {
-    required: "Ticket quantity is required",
-    min: {
-      value: 100,
-      message: "Ticket quantity must be at least 1",
+  type="date"
+  {...register("date_from", {
+    required: "Date from is required",
+    validate: (value) => {
+      const currentDate = new Date().toISOString().split("T")[0];  // Get the current date in 'YYYY-MM-DD' format
+      return value >= currentDate || "Date from cannot be in the past";
     },
   })}
   InputLabelProps={{
     shrink: true,
   }}
-  error={!!errors.ticket_quantity}
-  helperText={errors.ticket_quantity?.message}
+  error={!!errors.date_from}
+  helperText={errors.date_from?.message}
 />
 
-              <TextField
-                fullWidth
-                label="Date From"
-                required
-                margin="normal"
-                type="date"
-                {...register("date_from", {
-                  required: "Date from is required",
-                })}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                error={!!errors.date_from}
-                helperText={errors.date_from?.message}
-              />
-
-              <TextField
-                fullWidth
-                label="Date To"
-                margin="normal"
-                type="date"
-                {...register("date_to")}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
+<TextField
+  fullWidth
+  label="Date To"
+  margin="normal"
+  type="date"
+  {...register("date_to", {
+    validate: (value) => {
+      const dateFrom = watch("date_from");  // Get the value of 'date_from'
+      return (
+        !dateFrom || value >= dateFrom || "Date to cannot be earlier than Date from"
+      );
+    },
+  })}
+  InputLabelProps={{
+    shrink: true,
+  }}
+  error={!!errors.date_to}
+  helperText={errors.date_to?.message}
+/>
 
               <TextField
                 fullWidth
@@ -326,7 +333,30 @@ export default function CreateEvent() {
             <Divider orientation="vertical" flexItem className="ms-10" />
 
             <Grid item xs={12} md={5}>
-              <FormLabel component="legend">Upload Banner</FormLabel>
+          <FormLabel component="legend" sx={{ mt: 3 }}>
+                Update the Image?
+              </FormLabel>
+              <Controller
+                name="uploadImage"
+                control={control}
+                rules={{ required: " is required" }}
+                render={({ field }) => (
+                  <RadioGroup row aria-label="upload-image" {...field}>
+                    <FormControlLabel
+                      value="Yes"
+                      control={<Radio />}
+                      label="Yes"
+                    />
+                    <FormControlLabel
+                      value="No"
+                      control={<Radio />}
+                      label="No"
+                    />
+                  </RadioGroup>
+                )}
+              /> 
+              
+              {uploadImage == "Yes" &&<> <FormLabel component="legend">Upload Banner</FormLabel>
               <FileUploader
                 name="banner"
                 control={control}
@@ -350,7 +380,7 @@ export default function CreateEvent() {
                   },
                 }}
               />
-
+              </>}
               <TextField
                 fullWidth
                 label="Terms and Conditions"
@@ -441,14 +471,10 @@ export default function CreateEvent() {
                 rows={4}
                 placeholder="Enter Event Highlights (comma-separated)"
                 {...register("highlights", {
-                  required:
-                   
-                   "e.g., In-Depth Talks, Networking Opportunities",
-             
+                  required: "e.g., In-Depth Talks, Networking Opportunities",
                 })}
                 error={!!errors.highlights}
                 helperText={errors.highlights?.message}
-                
               />
               <FormLabel component="legend" sx={{ mt: 3 }}>
                 Tags
@@ -480,7 +506,7 @@ export default function CreateEvent() {
             </Grid>
             <Grid container className="justify-end" sx={{ mt: 0 }}>
               <Button variant="contained" color="primary" type="submit">
-                Create Event
+                Update Event
               </Button>
             </Grid>
           </Grid>
@@ -502,8 +528,7 @@ export default function CreateEvent() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <DevTool control={control}/>
+      <DevTool control={control} />
     </>
-
   );
 }

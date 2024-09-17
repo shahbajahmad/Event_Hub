@@ -125,7 +125,7 @@ const Navbar = () => {
               <div className="hidden sm:ml-6 sm:block">
                 <div className="flex space-x-4">
                   {navigation.map((item) => {
-                   if (item.name === "Dashboard" && ( user?.role !== "Organizer")) {
+                   if (item.name === "Dashboard" && ( user?.role == "Attendee")) {
                     return null
                    } 
                  return   <Link
@@ -146,7 +146,7 @@ const Navbar = () => {
               </div>
             </div>
             <div className="absolute inset-y-0 right-0 flex gap-2 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-             {token && <Link to="/organize-event">
+             {token && user?.role !== "Admin" && <Link to="/organize-event">
                 <Button
                   variant="contained"
                   className=" rounded-full  capitalize "

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import HomePage from '../pages/HomePage';
 import Navbar from './Navbar';
@@ -9,11 +9,20 @@ import ProfilePage from '../pages/ProfilePage';
 import EventsPage from '../pages/EventsPage';
 import EventDetailPage from '../pages/EventDetailPages';
 import DashboardPage from '../pages/DashboardPage';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { checkTokenExpiry } from '../service/features/authSlice';
 
 export default function MainRouter() {
-  const { user } = useSelector((state) => state.auth);
+  const { user,token } = useSelector((state) => state.auth);
   const location = useLocation();  // Use useLocation to get current path
+  const dispatch = useDispatch();
+  useState({})
+ 
+  useEffect(() => {
+    if (token) {
+      dispatch(checkTokenExpiry()); // Check if the token is expired
+    }
+  }, [token, dispatch]);
 
   // Check if the current path is dashboard
   const isDashboardPage = location.pathname === '/dashboard';

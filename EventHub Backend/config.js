@@ -1,5 +1,5 @@
 const  mongoose  = require("mongoose")
-
+const Event = require("./models/Event")
 
 
 const connectDb = ()=>{

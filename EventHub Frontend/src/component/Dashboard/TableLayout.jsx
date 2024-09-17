@@ -8,7 +8,7 @@ export default function TableLayout() {
         <Typography variant="body1" fontWeight="bold">Event Name</Typography>
       </Box>
       <Box display="flex" alignItems="center" width="20%"> {/* Set consistent width */}
-        <Typography variant="body1" fontWeight="bold">Location</Typography>
+        <Typography pl={5} variant="body1" fontWeight="bold">Organizer Name</Typography>
       </Box>
       <Box display="flex" alignItems="center" width="10%"> {/* Adjust width as needed */}
         <Typography variant="body1" fontWeight="bold">Date</Typography>
@@ -17,6 +17,9 @@ export default function TableLayout() {
         <Typography variant="body1" fontWeight="bold">Price</Typography>
       </Box>
       <Box display="flex" alignItems="center" width="10%"> {/* Adjust width as needed */}
+        <Typography variant="body1" fontWeight="bold">Status</Typography>
+      </Box>
+      <Box display="flex" justifyContent={"center"} alignItems="center" width="15%"> {/* Adjust width as needed */}
         <Typography variant="body1" fontWeight="bold">Action</Typography>
       </Box>
     </Box>
