@@ -1,24 +1,44 @@
-import React from 'react';
-import { Box, Typography, Button, IconButton } from '@mui/material';
-import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteUser, updateUser } from '../../service/features/userSlice';
-import { setActiveTab } from '../../service/features/sideBarSlice';
+import React, { useState } from 'react';
+import {
+  Box,
+  Typography,
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import WarningRoundedIcon from '@mui/icons-material/WarningRounded'; // Import the warning icon
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteUser } from '../../service/features/userSlice';
 
-export default function UserRow({ user }) {
+export default function UserRow({ user, setSelectedUser }) {
   const dispatch = useDispatch();
   const { user: authUser } = useSelector((state) => state.auth);
 
-  const handleDelete = () => {
-    dispatch(deleteUser(user._id));
+  // State to control modal open/close
+  const [open, setOpen] = useState(false);
+
+  // Open modal
+  const handleOpen = () => {
+    setOpen(true);
   };
 
-  const handleUpdate = () => {
-    dispatch(updateUser(user));
-    dispatch(setActiveTab('editUser')); // Assuming 'editUser' tab is present
+  // Close modal
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  // Handle delete user action
+  const handleDelete = () => {
+    dispatch(deleteUser(user._id));
+   
+    
+    handleClose(); // Close modal after deletion
   };
 
   return (
@@ -49,23 +69,49 @@ export default function UserRow({ user }) {
       {authUser.role === 'Admin' && (
         <Box display="flex" gap={2} alignItems="center">
           {/* View Details */}
-          <Link to={`/user/${user._id}`}>
-            <IconButton color="primary">
-              <VisibilityIcon />
-            </IconButton>
-          </Link>
-
-          {/* Edit User */}
-          <IconButton color="secondary" onClick={handleUpdate}>
-            <EditIcon />
+          <IconButton
+            color="primary"
+            onClick={() => {
+              setSelectedUser(user);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          >
+            <VisibilityIcon />
           </IconButton>
 
           {/* Delete User */}
-          <IconButton color="error" onClick={handleDelete}>
+          <IconButton color="error" onClick={handleOpen}>
             <DeleteIcon />
           </IconButton>
         </Box>
       )}
+
+      {/* Confirmation Modal */}
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title" sx={{ display: 'flex', alignItems: 'center' }}>
+          {/* Warning Icon */}
+          <WarningRoundedIcon className='text-xl' sx={{ marginRight: '10px', color: '#f44336' }} />
+          <Typography variant="h6" component="span">Confirm Deletion</Typography>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete <strong>{user.first_name} {user.last_name}</strong>? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            No
+          </Button>
+          <Button onClick={handleDelete} color="error" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

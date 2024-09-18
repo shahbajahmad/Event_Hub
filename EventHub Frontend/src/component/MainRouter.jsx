@@ -9,20 +9,13 @@ import ProfilePage from '../pages/ProfilePage';
 import EventsPage from '../pages/EventsPage';
 import EventDetailPage from '../pages/EventDetailPages';
 import DashboardPage from '../pages/DashboardPage';
-import { useDispatch, useSelector } from 'react-redux';
-import { checkTokenExpiry } from '../service/features/authSlice';
+import { useSelector } from 'react-redux';
 
 export default function MainRouter() {
-  const { user,token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   const location = useLocation();  // Use useLocation to get current path
-  const dispatch = useDispatch();
-  useState({})
+
  
-  useEffect(() => {
-    if (token) {
-      dispatch(checkTokenExpiry()); // Check if the token is expired
-    }
-  }, [token, dispatch]);
 
   // Check if the current path is dashboard
   const isDashboardPage = location.pathname === '/dashboard';

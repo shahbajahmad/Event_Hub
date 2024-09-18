@@ -22,6 +22,7 @@ import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import { Link } from "react-router-dom";
 import { setActiveTab } from "../../service/features/sideBarSlice";
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 export default function Sidebar() {
   const dispatch = useDispatch()
   const {activePage} = useSelector((state)=>state.sideBar)
@@ -34,8 +35,11 @@ export default function Sidebar() {
     { text: "Dashboard", icon: <DashboardIcon />, key: "dashboard" },
     { text: "Organized Events", icon: <CalendarTodayIcon />, key: "organizedEvents" },
     { text: "Upcoming Events", icon: <WorkIcon />, key: "upcomingEvents" },
+    
     { text: "Pending Events", icon: <PendingActionsIcon />, key: "pendingEvents" },
+    { text: "Rejected Events", icon: <ThumbDownOffAltIcon />, key: "rejectedEvents" },
     { text: "Edit Events", icon: <DescriptionIcon />, key: "editEvents" },
+
    
   ];
 

@@ -63,7 +63,7 @@ export const updateUser = createAsyncThunk(
 );
 export const deleteUser = createAsyncThunk(
   "userProfile/deleteUser",
-  async (userId, { getState, rejectWithValue }) => {
+  async (userId, { getState, rejectWithValue,dispatch }) => {
     const { auth } = getState();
     const token = auth.token;
     if (!token) return rejectWithValue("No token available");
@@ -80,6 +80,7 @@ export const deleteUser = createAsyncThunk(
       if (!response.ok) {
         return rejectWithValue(data.error);
       }
+      dispatch(fetchAllUsers())
       return { userId };
     } catch (error) {
       return rejectWithValue(error.message);
@@ -124,6 +125,9 @@ const userSlice = createSlice({
   reducers: {
     setavatarColor(state, action) {
       state.avatarColor = action.payload;
+    },
+    resetUser(state) {
+      state.user = null; // Set user to null when logged out
     },
   },
   extraReducers: (builder) => {
@@ -174,5 +178,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { setavatarColor } = userSlice.actions;
+export const { setavatarColor,resetUser } = userSlice.actions;
 export default userSlice.reducer;

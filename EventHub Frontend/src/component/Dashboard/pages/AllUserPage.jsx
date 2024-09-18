@@ -3,11 +3,14 @@ import { Grid, Paper, Typography, Divider, CircularProgress, Box, RadioGroup, Fo
 import { useSelector, useDispatch } from 'react-redux';
 import UserRow from '../UserRow'; // Assuming you have a UserRow component like EventRow
 import { fetchAllUsers } from '../../../service/features/userSlice'; // Adjust path to match your setup
+import ProfileHeaderAndInfo from '../../ProfileHeaderAndInfo';
+import { updateUser } from '../../../service/features/userSlice';
 
 export default function AllUserPage() {
   const dispatch = useDispatch();
    // State for sorting by status
    const [selectedRole, setSelectedRole] = useState('');
+   const [selectedUser, setSelectedUser] = useState();
 
   // Fetch users from the Redux store
   const { users, error, isLoading } = useSelector((state) => state.userDetail);
@@ -20,14 +23,18 @@ export default function AllUserPage() {
   const handleRoleChange = (user) => {
     setSelectedRole(user.target.value);
   };
-
+  
   // Filter events based on selected status
   const filteredUsers = selectedRole
     ? users.filter(user => user.role === selectedRole)
     : users;
   return (
     <div className="min-h-screen p-4">
-      <Grid container spacing={3}>
+{ selectedUser &&
+<ProfileHeaderAndInfo
+          givenUser={selectedUser}
+      />
+     }     <Grid container spacing={3}>
         {/* All Users Section */}
         <Grid item xs={12}>
           <Typography variant="h5" className="font-light mb-4">All Users</Typography>
@@ -69,7 +76,7 @@ export default function AllUserPage() {
             ) : error ? (
               <Typography>No users available.</Typography>
             ) : filteredUsers.length > 0 ? (
-              filteredUsers.map(user => <UserRow key={user._id} user={user} />) // Render a UserRow component for each user
+              filteredUsers.map(user => <UserRow key={user._id} user={user} setSelectedUser={setSelectedUser} />) // Render a UserRow component for each user
             ) : (
               <Typography>No users found.</Typography>
             )}

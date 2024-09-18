@@ -1,32 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
+import {resetUser} from "./userSlice"
 
 const apiUrl = import.meta.env.VITE_API_BASE_URL;
-export const checkTokenExpiry = createAsyncThunk(
-  'auth/checkTokenExpiry',
-  async (_, { rejectWithValue, dispatch }) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${apiUrl}/service/check-token`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
 
-      const data = await response.json();
-    
-      if (response.status == 401) {
-        dispatch(logout()); // Log out if token is expired
-        return rejectWithValue(data.error);
-      }
-
-      return data; // Return data if token is valid
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (credentials, { rejectWithValue }) => {
@@ -83,11 +59,12 @@ const authSlice = createSlice({
     loginError:null,
   },
   reducers: {
-    logout(state) {
+    logout(state,action) {
       state.user = null;
       state.token = null;
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      action.asyncDispatch(resetUser());
     },
   },
   extraReducers: (builder) => {

@@ -13,7 +13,7 @@ export default function OrganizerDashboard() {
   // Filter only the events where the event date (date_from) is in the future
 
 
-  const completedEvents = organizerEvents?.filter(event => (new Date(event.date_from) < currentDate)&&(event.status !== "In Process"));
+  const completedEvents = organizerEvents?.filter(event => (new Date(event.date_from) < currentDate)&&(event.status === "Complete"));
 
   return (
     <div className="min-h-screen p-4">

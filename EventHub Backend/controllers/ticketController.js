@@ -17,6 +17,9 @@ exports.createTicket = async (req, res) => {
     if (!event) {
       return res.status(404).json({ error: 'Event not found' });
     }
+    if (event.status !== "Approved") {
+      return res.status(404).json({ error: `Cannot buy ticket because event status ${event.status}` });
+    }
     
     if (event.ticket_quantity_left <= 0) {
       return res.status(400).json({ error: 'No tickets available for this event' });
@@ -51,10 +54,10 @@ exports.getTicketsByUser = async (req, res) => {
     const currentDate = new Date();
 
     // Filter out tickets for events that have already passed
-    const upcomingTickets = tickets.filter(ticket => new Date(ticket.event_id.date_from) > currentDate);
+    const upcomingTickets = tickets.filter(ticket => new Date(ticket.event_id?.date_from) > currentDate);
 
     // Sort the remaining tickets by event date (date_from) in ascending order
-    upcomingTickets.sort((a, b) => new Date(a.event_id.date_from) - new Date(b.event_id.date_from));
+    upcomingTickets.sort((a, b) => new Date(a.event_id?.date_from) - new Date(b.event_id?.date_from));
 
     res.json(upcomingTickets);
   } catch (error) {

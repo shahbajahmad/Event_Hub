@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import PendingEventPage from "./pages/PendingEventPage";
 import AllEventsPage from "./pages/AllEventsPage";
 import AllUserPage from "./pages/AllUserPage";
+import RejectedEventsPage from "./pages/RejectedEventPage";
 
 export default function MainLayout() {
 
@@ -28,7 +29,8 @@ export default function MainLayout() {
           return <AllUserPage />;
       case "editEvents":
         return <EditEventsPage />;
-        
+        case "rejectedEvents":
+          return <RejectedEventsPage />;
       default:
         return <DashboardPage />;
     }

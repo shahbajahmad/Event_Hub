@@ -4,23 +4,21 @@ import { useSelector } from 'react-redux';
 import EventRow from '../EventRow';
 import TableLayout from '../TableLayout';
 
-export default function OrganizerDashboard() {
+export default function RejectedEventsPage() {
   const { organizerEvents, error, isLoading } = useSelector((state) => state.event);
 
-  // Filter only the events with status "Complete"
-
+  // Get the current date
   const currentDate = new Date();
+
   // Filter only the events where the event date (date_from) is in the future
-
-
-  const completedEvents = organizerEvents?.filter(event => (new Date(event.date_from) < currentDate)&&(event.status !== "In Process"));
+  const rejectEvents = organizerEvents?.filter(event => event.status === "Reject");
 
   return (
     <div className="min-h-screen p-4">
       <Grid container spacing={3}>
-        {/* Event Organized */}
+        {/* Upcoming Events */}  
         <Grid item xs={12}>
-          <Typography variant="h5" className="font-light mb-4">Events Organized</Typography>
+          <Typography variant="h5" className="font-light mb-4">Rejected Events</Typography>
           <Paper elevation={3} className="p-4 overflow-auto">
             <TableLayout />
             <Divider className="mb-4" />
@@ -28,10 +26,10 @@ export default function OrganizerDashboard() {
               <CircularProgress />
             ) : error ? (
               <Typography>No events available.</Typography>
-            ) : completedEvents.length > 0 ? (
-              completedEvents.map(event => <EventRow key={event._id} event={event} />)
+            ) : rejectEvents.length > 0 ? (
+              rejectEvents.map(event => <EventRow key={event._id} event={event} />)
             ) : (
-              <Typography>No completed events found.</Typography>
+              <Typography>No Rejected events found.</Typography>
             )}
           </Paper>
         </Grid>
