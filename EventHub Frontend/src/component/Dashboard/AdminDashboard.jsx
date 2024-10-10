@@ -153,7 +153,7 @@ export default function AdminDashboard() {
               {analytics.recentActivities.map((activity, index) => (
                 <ListItem key={index}>
                   <ListItemText
-                    primary={`${activity.user_id.first_name} ${activity.user_id.last_name} bought a ticket for ${activity.event_id?.name}`}
+                    primary={`${activity.user_id?.first_name} ${activity.user_id?.last_name} bought a ticket for ${activity.event_id?.name}`}
                   />
                 </ListItem>
               ))}
