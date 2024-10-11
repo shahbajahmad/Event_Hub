@@ -1,0 +1,47 @@
+services:
+  server:
+    build:
+      context: ./EventHub Backend
+      dockerfile: Dockerfile
+    image: myapp-server
+    container_name: myapp-node-server
+    command: npm run start
+    volumes:
+      - ./EventHub Backend/:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "3000:3000"
+    env_file: 
+      - ./EventHub Backend/.env  # Load environment variables for backend
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+
+  client:
+    build:
+      context: ./EventHub Frontend
+      dockerfile: Dockerfile
+    image: myapp-client
+    container_name: myapp-react-client
+    command: npm run dev
+    volumes:
+      - ./EventHub Frontend/:/usr/app
+      - /usr/app/node_modules
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./EventHub Frontend/.env  # Load environment variables for frontend
+    depends_on:
+      - server
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  node_modules:
+  web-root:
+    driver: local
