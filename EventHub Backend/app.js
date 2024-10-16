@@ -33,7 +33,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', (req,res)=>res.send("<h1>WELCOME TO BACKEND OF EVENTHUB</h1>"));
+// app.use('/', (req,res)=>res.send("<h1>WELCOME TO BACKEND OF EVENTHUB</h1>"));
 app.use('/api', mainRouter);
 app.use('/auth', authRouter);
 app.use('/service', authMiddleware, serviceRouter);
