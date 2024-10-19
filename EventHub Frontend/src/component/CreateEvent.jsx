@@ -26,41 +26,13 @@ import { createEvent, resetEvent } from "../service/features/eventSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { showSnackbar } from "../service/features/snackbarSlice";
 import {fetchUser} from "../service/features/userSlice"
-import { DevTool } from "@hookform/devtools";
+
 
 
 const today = new Date();
 today.setDate(today.getDate() + 1);
 const formattedDate = today.toISOString().split('T')[0];
-const defaultValues = {
-  event_type: "Physical",
-  entry_type: "Free",
-  name: "Tech Innovation Expo 2024",
-  date_from: formattedDate,
-  date_to:  formattedDate,
-  ticket_quantity:100,
-  location: "San Francisco, CA",
-  address: "1234 Innovation Way, San Francisco, CA 94107",
-  contact_number: "123-456-7890",
-  description:
-    "Join us for the Tech Innovation Expo 2024, where industry leaders showcase the latest in technology and innovation.",
-  banner: "",
-  terms_conditions:
-    "All attendees must follow the event code of conduct. No refunds will be issued.",
-  video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-  social_links: {
-    facebook: "https://www.facebook.com/TechInnovationExpo",
-    instagram: "https://www.instagram.com/tech_innovation_expo",
-    linkedin: "https://www.linkedin.com/company/techinnovationexpo",
-    website: "https://www.techinnovationexpo.com",
-  },
-  tags: ["Technology", "Innovation", "Expo"],
-  highlights: [
-    'In-Depth Talks and Workshops',
-    'Networking Opportunities',
-    'Exhibitor Showcase'
-  ],
-};
+
 
 export default function CreateEvent() {
   const dispatch = useDispatch();
@@ -76,13 +48,19 @@ export default function CreateEvent() {
     control,
     watch,
     formState: { errors },
-  } = useForm({ defaultValues });
+  } = useForm();
   const entry_type = watch("entry_type");
 
-  const onSubmit = (data) => {
-    dispatch(createEvent({ ...data, organizer_id: user._id }));
-  };
-
+const onSubmit = async (data) => {
+  try {
+    await dispatch(createEvent({ ...data, organizer_id: user._id }));
+    // Reset the form fields after successful submission
+    reset(); // <-- call reset to clear the form
+  } catch (error) {
+    console.error("Submission failed", error);
+    // Handle error (optional)
+  }
+};
   useEffect(() => {
     if (hasMounted.current) {
       if (error) {
@@ -507,7 +485,7 @@ export default function CreateEvent() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <DevTool control={control}/>
+
     </>
 
   );

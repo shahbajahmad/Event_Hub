@@ -106,7 +106,7 @@ export default function EditEventRow({ event }) {
             </IconButton>
 
             {/* Delete with Icon */}
-            <IconButton color="error" onClick={handleOpenDeleteModal} disabled={event.status === "Complete"}>
+            <IconButton color="error" onClick={handleOpenDeleteModal} >
               <DeleteIcon />
             </IconButton>
           </>
