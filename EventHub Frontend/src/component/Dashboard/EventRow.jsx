@@ -120,7 +120,7 @@ export default function EditEventRow({ event }) {
             </Link>
 
             {/* Edit with Icon */}
-            <IconButton color="secondary" disabled={!(event.status === "In Process" || event.status === "Reject")} onClick={handleEdit}>
+            <IconButton color="secondary" disabled={event.status === "Complete"} onClick={handleEdit}>
               <EditIcon />
             </IconButton>
           </>

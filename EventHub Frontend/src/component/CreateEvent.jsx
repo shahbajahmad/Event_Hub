@@ -35,6 +35,35 @@ const formattedDate = today.toISOString().split('T')[0];
 
 
 export default function CreateEvent() {
+  // const defaultValues = {
+  //   event_type: "Physical",
+  //   entry_type: "Free",
+  //   name: "Tech Innovation Expo 2024",
+  //   date_from: formattedDate,
+  //   date_to:  formattedDate,
+  //   ticket_quantity:100,
+  //   location: "San Francisco, CA",
+  //   address: "1234 Innovation Way, San Francisco, CA 94107",
+  //   contact_number: "123-456-7890",
+  //   description:
+  //     "Join us for the Tech Innovation Expo 2024, where industry leaders showcase the latest in technology and innovation.",
+  //   banner: "",
+  //   terms_conditions:
+  //     "All attendees must follow the event code of conduct. No refunds will be issued.",
+  //   video_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  //   social_links: {
+  //     facebook: "https://www.facebook.com/TechInnovationExpo",
+  //     instagram: "https://www.instagram.com/tech_innovation_expo",
+  //     linkedin: "https://www.linkedin.com/company/techinnovationexpo",
+  //     website: "https://www.techinnovationexpo.com",
+  //   },
+  //   tags: ["Technology", "Innovation", "Expo"],
+  //   highlights: [
+  //     'In-Depth Talks and Workshops',
+  //     'Networking Opportunities',
+  //     'Exhibitor Showcase'
+  //   ],
+  // };
   const dispatch = useDispatch();
   const {
     user,
@@ -48,7 +77,7 @@ export default function CreateEvent() {
     control,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm({defaultValues});
   const entry_type = watch("entry_type");
 
 const onSubmit = async (data) => {

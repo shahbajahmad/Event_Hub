@@ -28,7 +28,7 @@ export const createEvent = createAsyncThunk(
       // Now create the event with the file URL
       const response = await fetch(`${apiUrl}/api/protected/events`, {
         method: 'POST',
-        body: JSON.stringify({ ...eventData, banner: `${apiUrl}${fileUrl}` }), // Include the file URL in the event data
+        body: JSON.stringify({ ...eventData, banner: `${fileUrl}` }), // Include the file URL in the event data
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -72,20 +72,19 @@ export const fetchOrganizerEvents = createAsyncThunk(
 );
 export const updateEvent = createAsyncThunk(
   'event/updateEvent',
-  async ({ eventId, eventData,uploadImage }, { rejectWithValue,dispatch }) => {
+  async ({ eventId, eventData, uploadImage }, { rejectWithValue, dispatch }) => {
     try {
-      
-      if (uploadImage == "Yes") {
-        const formData = new FormData();  // Create a new FormData instance
-      if (eventData.banner && eventData.banner[0]) {
+      if (uploadImage === "Yes" && eventData.banner && eventData.banner[0]) {
         // Delete the previous banner
-      await fetch(`${apiUrl}/service/delete/${eventId}`, {
+        await fetch(`${apiUrl}/service/delete/${eventId}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
           },
         });
 
+        // Prepare and upload the new banner image
+        const formData = new FormData();
         formData.append('banner', eventData.banner[0]);  // Assuming `banner` is an array with the file
 
         const uploadResponse = await fetch(`${apiUrl}/service/upload`, {
@@ -103,16 +102,14 @@ export const updateEvent = createAsyncThunk(
 
         const fileData = await uploadResponse.json();
         const fileUrl = fileData.url;  // Extract the file URL from the upload response
-        eventData.banner = `${apiUrl}${fileUrl}`;  // Include the new file URL in the event data
+        eventData.banner = fileUrl;  // Update the event data with the new file URL
       }
 
-      }
+      // Adjust the event data for ticket quantity
+      eventData.ticket_quantity += Number(eventData.ticket_offset);
+      eventData.ticket_quantity_left += Number(eventData.ticket_offset);
 
-     
-    eventData.ticket_quantity += Number(eventData.ticket_offset)  
-    eventData.ticket_quantity_left +=Number(eventData.ticket_offset)  
-
-    // Now update the event with new data
+      // Update the event data in the backend
       const response = await fetch(`${apiUrl}/api/protected/events/${eventId}`, {
         method: 'PUT',
         body: JSON.stringify(eventData),
@@ -126,13 +123,15 @@ export const updateEvent = createAsyncThunk(
       if (!response.ok) {
         return rejectWithValue(data.error || 'Event update failed');
       }
-      dispatch(addEditEvent({...data,ticket_offset:0}))
+
+      dispatch(addEditEvent({ ...data, ticket_offset: 0 }));
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
     }
   }
 );
+
 
 export const fetchAllEvents = createAsyncThunk(
   'event/fetchAllEvents',

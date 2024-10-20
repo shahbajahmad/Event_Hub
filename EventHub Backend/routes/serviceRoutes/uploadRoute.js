@@ -1,48 +1,47 @@
 const express = require('express');
 const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const path = require('path');
 const router = express.Router();
-const fileSizeLimit = parseInt(process.env.FILE_SIZE, 10); // Assuming the FILE_SIZE is in bytes
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './public/uploads'); 
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);  // Create a unique filename for the uploaded file
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Set up Cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'uploads', // Optional folder name where files will be stored in Cloudinary
+    public_id: (req, file) => {
+      const name = path.parse(file.originalname).name; // Get the filename without extension
+      return `${Date.now()}-${name}`; // Use timestamp and filename, without the extension
+    },
+    format: null, // Make sure Cloudinary does not add an extension (keeps it as it is)
   }
 });
 
+// Initialize multer with Cloudinary storage
 const upload = multer({ storage });
 
+// Route for file uploads
 router.post('/', upload.single('banner'), (req, res) => {
-  
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
-    
-    // Manually check the file size
-    if (req.file.size > fileSizeLimit) {
-      // Remove the uploaded file if it exceeds the limit
-      const fs = require('fs');
-      fs.unlink(req.file.path, (err) => {
-        if (err) {
-          console.error('Failed to delete oversized file:', err);
-        }
-      });
-      return res.status(400).json({ error: `File size exceeds the limit of ${fileSizeLimit / 1000000}MB.` });
-    }
-  
-    res.json({ url: `/uploads/${req.file.filename}` });
+
+    // Use req.file.secure_url to get the full Cloudinary URL
+    res.json({
+      url: req.file.secure_url, // Full Cloudinary URL
+      public_id: req.file.public_id, // Cloudinary's public ID for this file
+    });
   } catch (err) {
-    if (err instanceof multer.MulterError) {
-      // Handle Multer-specific errors
-      return res.status(400).json({ error: err.message });
-    } else {
-      // Handle other errors
-      return res.status(500).json({ error: 'An error occurred while uploading the file' });
-    }
+    return res.status(500).json({ error: 'An error occurred while uploading the file' });
   }
 });
 
