@@ -35,6 +35,7 @@ const formattedDate = today.toISOString().split('T')[0];
 
 
 export default function CreateEvent() {
+  const defaultValues = {}
   // const defaultValues = {
   //   event_type: "Physical",
   //   entry_type: "Free",
